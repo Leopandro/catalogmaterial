@@ -1,0 +1,10 @@
+#add_product{margin-bottom: 20px;}
+#add_product_box{}
+#saveOrderProduct{margin-top: 15px;}
+.order_products{margin-bottom: 10px;}
+.clear{clear: both;}
+
+
+#add-product-modal .modal-dialog {
+    width:50%;
+}
