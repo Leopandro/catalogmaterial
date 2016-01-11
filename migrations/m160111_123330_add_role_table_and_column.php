@@ -13,19 +13,22 @@ class m160111_123330_add_role_table_and_column extends Migration
             'title' => Schema::TYPE_STRING.'(64) NOT NULL'
         ]);
         $this->insert('role', [
-            'id' => 0,
             'name' => 'admin',
             'title' => 'Администратор',
         ]);
+        $this->insert('role', [
+            'name' => 'user',
+            'title' => 'Пользователь',
+        ]);
         $this->addColumn('user', 'role_id', Schema::TYPE_INTEGER . ' NOT NULL default 1');
-        $this->addForeignKey('fk_user_role-id', 'user', 'role_id', 'role', 'id', 'CASCADE');
+        $this->addForeignKey('fk_user_role_id', 'user', 'role_id', 'role', 'id', 'CASCADE');
     }
 
     public function down()
     {
         $this->dropTable('role');
         $this->dropColumn('user', 'role_id');
-        $this->dropForeignKey('fk_user_role-id', 'user');
+        $this->dropForeignKey('fk_user_role_id', 'user');
     }
 
     /*
