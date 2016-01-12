@@ -41,22 +41,17 @@ $this->params['breadcrumbs'][] = $this->title;
     'layout'  		=> "{items}\n{pager}",
     'columns' => [
         'username',
-        'full_name',
-        'email:email',
         [
-            'attribute' => 'registration_ip',
-            'value' => function ($model) {
-                return $model->registration_ip == null
-                    ? '<span class="not-set">' . Yii::t('user', '(not set)') . '</span>'
-                    : $model->registration_ip;
-            },
-            'format' => 'html',
+            'attribute' => 'Роль',
+            'value' => 'role.title',
         ],
         [
-            'attribute' => 'corporate_email',
-            'value' => function ($model) {
-                return $model->corporate_email;
-            }
+            'attribute' => 'Права доступа',
+            'format' => 'raw',
+            'value' => function ($model)
+            {
+                return Html::a('Редактировать', ['/access/index', 'id' => $model->id], ['class' => 'btn btn-xs btn-info']);
+            },
         ],
         /*[
             'attribute' => 'created_at',

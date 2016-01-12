@@ -34,9 +34,6 @@ use yii\helpers\Html;
 ]); ?>
 
 <?= $form->field($profile, 'name') ?>
-<?= $form->field($profile, 'phone')->widget(\yii\widgets\MaskedInput::className(), [
-	'mask' => '+7(999) 999-99-99',
-]) ?>
 
 
 <div class="form-group">

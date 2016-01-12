@@ -23,18 +23,18 @@ class User extends BaseUser
 
         if($isAdmin) {
             return [
-                ['label' => 'Пользователи', 'url' => ['/users/index']],
-                ['label' => 'Права доступа', 'url' => ['/tasks/index']],
+                ['label' => 'Пользователи', 'url' => ['/user/admin/index']],
+                ['label' => 'Права доступа', 'url' => ['/access/index']],
                 ['label' => 'Каталог разделов', 'url' => ['/shop-categories/index']],
                 ['label' => 'Каталог материалов', 'url' => ['/shop-products/index']],
                 ['label' => 'Добавление раздела', 'url' => ['/shop-products/tree']],
                 ['label' => 'Группа', 'url' => ['/clients/index']],
-                ['label' => 'Характеристика группы', 'url' => ['/user/admin/index']],
-                ['label' => 'Карточка материала', 'url' => ['/user/admin/index']],
-                ['label' => 'Сверка дат', 'url' => ['/user/admin/index']],
-                ['label' => 'Импорт', 'url' => ['/user/admin/index']],
-                ['label' => 'Экспорт', 'url' => ['/user/admin/index']],
-                ['label' => '', 'url' => ['/user/admin/index']],
+                ['label' => 'Характеристика группы', 'url' => ['/user/admin/index1']],
+                ['label' => 'Карточка материала', 'url' => ['/user/admin/index1']],
+                ['label' => 'Сверка дат', 'url' => ['/user/admin/index1']],
+                ['label' => 'Импорт', 'url' => ['/user/admin/index1']],
+                ['label' => 'Экспорт', 'url' => ['/user/admin/index1']],
+                ['label' => '', 'url' => ['/user/admin/index1']],
                 [
                     'label' => 'Выйти (' . Yii::$app->user->identity->username . ')',
                     'url' => ['/site/logout'],
@@ -54,9 +54,10 @@ class User extends BaseUser
                 ],
             ];
         }
-
-
-
     }
 
+    public function getRole()
+    {
+        return $this->hasOne(Role::className(), ['id' => 'role_id']);
+    }
 }
