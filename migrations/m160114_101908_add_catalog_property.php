@@ -7,12 +7,12 @@ class m160114_101908_add_catalog_property extends Migration
 {
     public function up()
     {
-        $this->addColumn('catalog', 'group_id', Schema::TYPE_INTEGER.' NOT NULL DEFAULT 0');
+        $this->addColumn('catalog', 'node_type', Schema::TYPE_INTEGER.' NOT NULL DEFAULT 0');
     }
 
     public function down()
     {
-        $this->dropColumn('catalog', 'group_id');
+        $this->dropColumn('catalog', 'node_type');
     }
 
     /*
