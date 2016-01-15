@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->role->title;
                 },
         ],
-        
+
         [
             'attribute' => 'Права доступа',
             'format' => 'raw',

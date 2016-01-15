@@ -4,73 +4,33 @@ use yii\helpers\Html;
 
 $this->title = 'Каталог разделов';
 $this->params['breadcrumbs'][] = $this->title;
-function showChilds($leaves, $depth)
-{
-    $go = false;
-    foreach($leaves as $leave)
-    {
-        if (($leave->depth == $depth))
-        {
-            $go = true;
-        }
-    }
-    if ($go == false)
-        return;
-            echo "\\\"nodes\\\":[";
-            foreach ($leaves as $leave) {
-                if (($leave->depth == $depth)) {
-                    echo "{";
-                    if ($leave->node_type <> 0)
-                    {
-                        echo "\\\"node_type\\\":\\\"$leave->node_type\\\",";
-                    }
-                    echo "\\\"text\\\":\\\"$leave->name\\\",";
-                    echo "\\\"id\\\":\\\"$leave->id\\\",";
-                    showChilds($leaves, $leave->id);
-                    echo "},";
-                }
-            }
-            echo ']';
-}
-function showTree($leaves)
-{
-    echo '"[';
-    foreach($leaves as $leave)
-    {
-        if($leave->depth == 0)
-        {
-            echo "{";
-            echo "\\\"text\\\":\\\"$leave->name\\\",";
-            echo "\\\"id\\\":\\\"$leave->id\\\",";
-            showChilds($leaves, $leave->id);
-            echo "}";
-        }
-    }
-    echo ']"';
-}
+
+$dataTreeView = \app\models\Catalog::showTree($leaves);
+$dataTreeViewJson = yii\helpers\Json::encode(\app\models\Catalog::showTree($leaves));
 
 $script = <<< JS
-    var testree2 = [{text:"Countries",id:"1",nodes:[{text:"Russia",id:"2",nodes:[{text:"Moscow",id:"3",},{text:"Perm",id:"9",},]},]}];
-    function getTree() {
-        testree = $("#gettree").html().trim();
-        var tree = '';
-        for (var i = 0; i < testree.length; i++)
-        {
-            if (testree[i] == ',')
-            {
-                if ((testree[i + 1] == '}') || (testree[i + 1]) == ']')
-                {
-                }
-                else
-                tree += testree[i];
-            }
-            else
-                tree += testree[i];
-        }
-        console.log(tree);
-        tree = JSON.parse(tree);
-        return tree;
-    }
+//    var testree2 = [{text:"Countries",id:"1",nodes:[{text:"Russia",id:"2",nodes:[{text:"Moscow",id:"3",},{text:"Perm",id:"9",},]},]}];
+//    function getTree() {
+//        testree = $("#gettree").html().trim();
+//        var tree = '';
+//        for (var i = 0; i < testree.length; i++)
+//        {
+//            if (testree[i] == ',')
+//            {
+//                if ((testree[i + 1] == '}') || (testree[i + 1]) == ']')
+//                {
+//                }
+//                else
+//                tree += testree[i];
+//            }
+//            else
+//                tree += testree[i];
+//        }
+//        console.log(tree);
+//        tree = JSON.parse(tree);
+//        return tree;
+//    }
+
     $('#section').click(function(){
         var x = $('.node-selected');
         var id = $(x).attr('id');
@@ -93,7 +53,7 @@ $script = <<< JS
             $(location).attr('href',url);
         }
     });
-    $('#tree').treeview({data: getTree()});
+    $('#tree').treeview({data: $dataTreeViewJson});
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>
@@ -105,10 +65,4 @@ $this->registerJs($script, yii\web\View::POS_READY);
     </p>
 </div>
 <div class="col-xs-12" id="tree">
-
-</div>
-<div class="hidden" id="gettree">
-    <?
-        showTree($leaves);
-    ?>
 </div>
