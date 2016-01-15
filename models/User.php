@@ -1,8 +1,9 @@
 <?php
 namespace app\models;
 
-use dektrium\user\models\User as BaseUser;
 use Yii;
+use dektrium\user\models\User as BaseUser;
+
 class User extends BaseUser
 {
 
@@ -25,12 +26,7 @@ class User extends BaseUser
             return [
                 ['label' => 'Пользователи', 'url' => ['/user/admin/index']],
                 ['label' => 'Права доступа', 'url' => ['/access/index']],
-                ['label' => 'Каталог разделов', 'url' => ['/shop-categories/index']],
-                ['label' => 'Каталог материалов', 'url' => ['/shop-products/index']],
-                ['label' => 'Добавление раздела', 'url' => ['/shop-products/tree']],
-                ['label' => 'Группа', 'url' => ['/clients/index']],
-                ['label' => 'Характеристика группы', 'url' => ['/user/admin/index1']],
-                ['label' => 'Карточка материала', 'url' => ['/user/admin/index1']],
+                ['label' => 'Каталог разделов', 'url' => ['/menu/index']],
                 ['label' => 'Сверка дат', 'url' => ['/user/admin/index1']],
                 ['label' => 'Импорт', 'url' => ['/user/admin/index1']],
                 ['label' => 'Экспорт', 'url' => ['/user/admin/index1']],

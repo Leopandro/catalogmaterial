@@ -21,12 +21,12 @@
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "dektrium/yii2-user": "master",
-        "execut/yii2-widget-bootstraptreeview": "dev-master",
         "2amigos/yii2-file-upload-widget": "~1.0",
         "kartik-v/yii2-widget-select2": "@dev",
         "paulzi/yii2-adjacency-list": "^1.0",
         "kartik-v/yii2-grid": "@dev",
-        "roopz/yii2-imap": "dev-master"
+        "roopz/yii2-imap": "dev-master",
+        "creocoder/yii2-nested-sets": "^0.9.0"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
