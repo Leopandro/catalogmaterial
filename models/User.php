@@ -26,7 +26,7 @@ class User extends BaseUser
             return [
                 ['label' => 'Пользователи', 'url' => ['/user/admin/index']],
                 ['label' => 'Права доступа', 'url' => ['/access/index']],
-                ['label' => 'Каталог разделов', 'url' => ['/menu/index']],
+                ['label' => 'Каталог разделов', 'url' => ['/catalog/index']],
                 ['label' => 'Сверка дат', 'url' => ['/user/admin/index1']],
                 ['label' => 'Импорт', 'url' => ['/user/admin/index1']],
                 ['label' => 'Экспорт', 'url' => ['/user/admin/index1']],
