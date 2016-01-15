@@ -1,6 +1,9 @@
 <?php
 use yii\helpers\Html;
 /* @var $this yii\web\View */
+
+$this->title = 'Каталог разделов';
+$this->params['breadcrumbs'][] = $this->title;
 function showChilds($leaves, $depth)
 {
     $go = false;

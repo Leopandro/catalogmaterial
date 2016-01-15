@@ -7,6 +7,8 @@
  */
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+$this->title = 'Редактировать каталог';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="menu-form">
     <? echo $message?>

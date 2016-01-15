@@ -6,6 +6,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\Section */
 /* @var $form ActiveForm */
+$this->title = '';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="menu-form">
 
