@@ -40,11 +40,21 @@ $this->params['breadcrumbs'][] = $this->title;
     'filterModel'  	=> $searchModel,
     'layout'  		=> "{items}\n{pager}",
     'columns' => [
-        'username',
         [
-            'attribute' => 'Роль',
-            'value' => 'role.title',
+            'attribute' => 'username',
+            'value' => function ($model)
+            {
+                return $model->username;
+            },
         ],
+        [
+            'header' => "Роль",
+            'value' => function ($model)
+                {
+                    return $model->role->title;
+                },
+        ],
+        
         [
             'attribute' => 'Права доступа',
             'format' => 'raw',
