@@ -18,6 +18,7 @@ class CatalogController extends \yii\web\Controller
         {
             $root = new Catalog(['name' => 'Разделы']);
             $root->makeRoot();
+            $leaves = Catalog::find()->all();
         }
         return $this->render('index', [
             'leaves' => $leaves,

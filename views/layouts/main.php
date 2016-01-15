@@ -37,7 +37,7 @@ AppAsset::register($this);
 
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => User::getMenuItemsByRoleUser(!Yii::$app->user->isGuest ? Yii::$app->user->identity->getIsAdmin() : false,Yii::$app->user->isGuest)
+        'items' => User::getMenuItemsByRoleUser(!Yii::$app->user->isGuest ? Yii::$app->user : false,Yii::$app->user->isGuest)
     ]);
     NavBar::end();
     ?>
