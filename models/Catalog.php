@@ -56,7 +56,14 @@ class Catalog extends ActiveRecord
             if (($leave->depth == $depth)) {
                 $dataNode = [];
                 if ($leave->node_type <> 0)
+                {
                     $dataNode['node_type']=$leave->node_type;
+                    $dataNode['icon']='glyphicon glyphicon-book';
+                }
+                else
+                {
+                    $dataNode['icon']='glyphicon glyphicon-folder-open';
+                }
 
                 $dataNode['text']=$leave->name;
                 $dataNode['id']=$leave->id;

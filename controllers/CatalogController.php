@@ -9,11 +9,32 @@ class CatalogController extends \yii\web\Controller
 {
     public function actionIndex()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
         $section = new SectionForm();
         $leaves = Catalog::find()->all();
         /*
          * init root
          */
+        $sorted = false;
+        $length = count($leaves) - 1;
+        //
+        while ($sorted == false)
+        {
+            $sorted = true;
+            for ($i = 0; $i < $length; $i++)
+            {
+                if ($leaves[$i]->name > $leaves[$i+1]->name)
+                {
+                    var_dump($leaves[$i]->name.'>'.$leaves[$i+1]->name);
+                    $k = $leaves[$i];
+                    $leaves[$i] = $leaves[$i+1];
+                    $leaves[$i+1] = $k;
+                    $sorted = false;
+                }
+            }
+        }
         if (!$leaves)
         {
             $root = new Catalog(['name' => 'Разделы']);
@@ -28,6 +49,9 @@ class CatalogController extends \yii\web\Controller
 
     public function actionCreate()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
         $model = new SectionForm();
         $id = ($_GET['id']);
         if ($model->load(Yii::$app->request->post()))
@@ -64,6 +88,9 @@ class CatalogController extends \yii\web\Controller
 
     public function actionEdit()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
         $model = new SectionForm();
         $id = ($_GET['id']);
         if ($model->load(Yii::$app->request->post()) )

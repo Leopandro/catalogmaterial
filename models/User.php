@@ -22,7 +22,7 @@ class User extends BaseUser
         if($isGuest)
             return [];
 
-        if($isAdmin->identity->role_id == 1) {
+        if(Yii::$app->user->identity->role_id == 1) {
             return [
                 ['label' => 'Пользователи', 'url' => ['/user/admin/index']],
                 ['label' => 'Права доступа', 'url' => ['/access/index']],
@@ -38,9 +38,10 @@ class User extends BaseUser
                 ],
             ];
 
-        } else {
+        } else if(Yii::$app->user->identity->role_id == 2){
             return [
                 ['label' => 'Каталог разделов', 'url' => ['/catalog/index']],
+                ['label' => 'Каталог материалов', 'url' => ['/tasks-manager/index']],
                 ['label' => 'Отчет', 'url' => ['/tasks-manager/index']],
                 [
                     'label' => 'Выйти (' . Yii::$app->user->identity->username . ')',

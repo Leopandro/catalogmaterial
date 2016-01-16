@@ -3,11 +3,10 @@
 $params = require(__DIR__ . '/params.php');
 
 $config = [
-    'id' => 'catalogmaterial',
+    'id' => 'cmebel',
     'language' => 'ru',
     'timeZone' => 'Europe/Moscow',
     'basePath' => dirname(__DIR__),
-	'defaultRoute' => 'user/admin/index/',
     'bootstrap' => ['log'],
     'modules' => [
 	    'user' => [
