@@ -27,7 +27,6 @@ class CatalogController extends \yii\web\Controller
             {
                 if ($leaves[$i]->name > $leaves[$i+1]->name)
                 {
-                    var_dump($leaves[$i]->name.'>'.$leaves[$i+1]->name);
                     $k = $leaves[$i];
                     $leaves[$i] = $leaves[$i+1];
                     $leaves[$i+1] = $k;
