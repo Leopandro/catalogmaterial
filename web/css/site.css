@@ -97,3 +97,6 @@ a.desc:after {
 #tasks-grid.grid-view table tbody tr.not-complete-task td {
     background-color: #FF6666;
 }
+.treeview  .list-group li.node-tree span.glyphicon-folder-open {
+    margin-right: 10px;
+}
