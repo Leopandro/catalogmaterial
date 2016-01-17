@@ -5,6 +5,8 @@ use app\models\Catalog;
 use app\models\SectionForm;
 use Yii;
 
+
+
 class CatalogController extends \yii\web\Controller
 {
     public function actionIndex()
@@ -34,6 +36,7 @@ class CatalogController extends \yii\web\Controller
                 }
             }
         }
+
         if (!$leaves)
         {
             $root = new Catalog(['name' => 'Разделы']);

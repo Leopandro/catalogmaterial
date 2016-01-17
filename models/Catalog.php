@@ -63,6 +63,7 @@ class Catalog extends ActiveRecord
                 else
                 {
                     $dataNode['icon']='glyphicon glyphicon-folder-open';
+                    $dataNode['state']['expanded'] = true;
                 }
 
                 $dataNode['text']=$leave->name;
@@ -86,4 +87,13 @@ class Catalog extends ActiveRecord
         }
         return $result;
     }
+
+
+    public static function getTreeDataForAccessGroups() {
+
+        $leaves = Catalog::find()->all();
+
+        return self::showTree($leaves);
+    }
+
 }

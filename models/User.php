@@ -3,10 +3,26 @@ namespace app\models;
 
 use Yii;
 use dektrium\user\models\User as BaseUser;
+use yii\helpers\ArrayHelper;
+
 
 class User extends BaseUser
 {
 
+    const ROLE_ADMIN = 1;
+    const ROLE_USER = 2;
+
+    public static function getAllUsersForDropDownListByRole($roleName) {
+
+        $roleData = Role::findOne(["name"=>$roleName]);
+
+        $data = [];
+        if($roleData)
+            $data = ArrayHelper::map(User::find()->where(["role_id"=>$roleData->id])->asArray()->all(),'id','username');
+
+
+        return $data;
+    }
 
     public static function getNameById($id) {
         $row = self::find()->andWhere('id = :userId', array('userId' => $id))->one();
@@ -22,7 +38,7 @@ class User extends BaseUser
         if($isGuest)
             return [];
 
-        if(Yii::$app->user->identity->role_id == 1) {
+        if(Yii::$app->user->identity->role_id == User::ROLE_ADMIN) {
             return [
                 ['label' => 'Пользователи', 'url' => ['/user/admin/index']],
                 ['label' => 'Права доступа', 'url' => ['/access/index']],
@@ -38,7 +54,7 @@ class User extends BaseUser
                 ],
             ];
 
-        } else if(Yii::$app->user->identity->role_id == 2){
+        } else if(Yii::$app->user->identity->role_id == User::ROLE_USER){
             return [
                 ['label' => 'Каталог разделов', 'url' => ['/catalog/index']],
                 ['label' => 'Каталог материалов', 'url' => ['/tasks-manager/index']],
