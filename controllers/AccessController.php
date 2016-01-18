@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\AccessUserGroupMaterial;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -37,16 +38,30 @@ class AccessController extends Controller
 
     public function actionIndex()
     {
-
         $leaves = Catalog::find()->all();
         $allUsersWithRoleUser = User::getAllUsersForDropDownListByRole("user");
 
         $modelForm = new AccessGroupsFormModel;
+        if (Yii::$app->request->get('idUser')) {
+            $modelForm->user = Yii::$app->request->get('idUser');
+            $modelForm->loadTreeDataAccessGroups();
+        }
 
-
-        if (Yii::$app->request->get('id'))
+        if ($modelForm->load(Yii::$app->request->post()))
         {
-            return $this->render('index', ['id' => $_GET['id']]);
+            AccessUserGroupMaterial::deleteAll(['id_user'=>$modelForm->user]);
+            $idsGroupsIsAllow = explode(',',$modelForm->accessGroups);
+            $idsGroupsIsAllow = Catalog::checkAndGetIdsOfGroupElements($idsGroupsIsAllow);
+            $dataBatch = [];
+            foreach(is_array($idsGroupsIsAllow) ? $idsGroupsIsAllow : []  as $cur_id )
+                $dataBatch[] = ['id_user'=>$modelForm->user,'id_group_material'=>$cur_id,'is_allow'=>1];
+
+            if(count($dataBatch)>0)
+                Yii::$app->db->createCommand()->batchInsert(AccessUserGroupMaterial::tableName(), ['id_user','id_group_material','is_allow'], $dataBatch)->execute();
+
+            $modelForm->loadTreeDataAccessGroups();
+
+            \Yii::$app->session->setFlash('success','Данные сохранены');
         }
 
 

@@ -10,9 +10,14 @@ use yii\base\Object;
 use yii\db\ActiveRecord;
 
 use creocoder\nestedsets\NestedSetsBehavior;
+use yii\helpers\ArrayHelper;
 
 class Catalog extends ActiveRecord
 {
+
+    const TYPE_GROUP = 1;
+    const TYPE_PART = 0;
+
     public function behaviors() {
         return [
             'tree' => [
@@ -37,7 +42,7 @@ class Catalog extends ActiveRecord
         return new CatalogQuery(get_called_class());
     }
 
-    public  static function showChilds($leaves, $depth)
+    public  static function showChilds($leaves, $depth,$idsChecked=[])
     {
         $result = [];
 
@@ -66,10 +71,13 @@ class Catalog extends ActiveRecord
                     $dataNode['state']['expanded'] = true;
                 }
 
+                if(in_array($leave->id,$idsChecked))
+                    $dataNode['state']['checked'] = true;
+
                 $dataNode['text']=$leave->name;
                 $dataNode['id']=$leave->id;
 
-                $dataNode['nodes'] = self::showChilds($leaves, $leave->id);
+                $dataNode['nodes'] = self::showChilds($leaves, $leave->id,$idsChecked);
 
                 $result[] = (object)$dataNode;
             }
@@ -77,13 +85,13 @@ class Catalog extends ActiveRecord
 
         return $result;
     }
-    public  static function  showTree($leaves)
+    public  static function  showTree($leaves,$idsChecked=[])
     {
         $result = [];
         foreach($leaves as $leave)
         {
             if($leave->depth == 0)
-                $result[] = (object)['id'=>$leave->id,'text'=>$leave->name,'nodes'=>self::showChilds($leaves, $leave->id)];
+                $result[] = (object)['id'=>$leave->id,'text'=>$leave->name,'nodes'=>self::showChilds($leaves, $leave->id,$idsChecked)];
         }
         return $result;
     }
@@ -94,6 +102,21 @@ class Catalog extends ActiveRecord
         $leaves = Catalog::find()->all();
 
         return self::showTree($leaves);
+    }
+
+    public static function getTreeDataForAccessGroupsAndSelected($idsChecked = []) {
+
+        $leaves = Catalog::find()->all();
+
+        return self::showTree($leaves,$idsChecked);
+    }
+
+    public static function checkAndGetIdsOfGroupElements($rawIds=[]) {
+
+        $rows = self::find()->where(['node_type'=>self::TYPE_GROUP,'id'=>$rawIds])->asArray()->all();
+
+        $rowsData = ArrayHelper::map($rows,'id','id');
+        return array_keys($rowsData);
     }
 
 }
