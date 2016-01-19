@@ -7,6 +7,7 @@ class m160118_135029_create_characteristic_group extends Migration
 {
     public function up()
     {
+        $this->dropTable('characteristic_group');
         $this->createTable('characteristic_group', [
             'id' => 'pk',
             'name' => 'VARCHAR(255) NULL DEFAULT NULL',
