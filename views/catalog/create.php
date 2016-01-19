@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="hidden">
         <?
-            $model->id = $id;
+            //$model->id = $id;
             echo $form->field($model, 'id');
         ?>
     </div>
