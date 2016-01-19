@@ -26,7 +26,7 @@ $script = <<< JS
         var id = $(x).attr('id');
         var node_type = $(x).attr('node_type');
         console.log('id:',id,' node_type:',node_type);
-        if (id)
+        if ((id) && (node_type == undefined))
         {
             var url = 'index.php?r=catalog%2Fedit&id='+id;
             $(location).attr('href',url);

@@ -64,8 +64,7 @@ class CharacteristicGroupTempSearch extends CharacteristicGroupTemp
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'label', $this->label])
-            ->andFilterWhere(['like', 'name_table', $this->name_table]);
+            ->andFilterWhere(['like', 'label', $this->label]);
 
         return $dataProvider;
     }

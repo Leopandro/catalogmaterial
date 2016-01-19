@@ -89,7 +89,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ['characteristic/delete', 'id' => $model->id],
                                     [
                                         'data-confirm' => 'Удалить?',
-                                        'class' => 'btn btn-danger'
+                                        'class' => 'btn btn-danger',
+                                        'data-method' => 'post'
                                     ]
                                 );
                             }

@@ -10,7 +10,6 @@ use Yii;
  * @property integer $id
  * @property string $name
  * @property string $label
- * @property string $name_table
  * @property integer $type_value
  * @property integer $is_required
  * @property integer $id_group

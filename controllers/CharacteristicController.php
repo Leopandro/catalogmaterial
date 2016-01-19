@@ -97,9 +97,10 @@ class CharacteristicController extends Controller
      */
     public function actionDelete($id)
     {
+        $id_group = $this->findModel($id)->id_group;
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['catalog/editgroup', 'id' => $id_group]);
     }
 
     /**

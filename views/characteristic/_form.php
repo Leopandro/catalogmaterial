@@ -9,7 +9,10 @@ use app\models\CharacteristicGroup;
 ?>
 <?
 
-    $model->id_group = $_GET['id_group'];
+    if ($_GET['id_group'])
+    {
+        $model->id_group = $_GET['id_group'];
+    }
 
 ?>
 <div class="characteristic-group-form">
@@ -18,6 +21,10 @@ use app\models\CharacteristicGroup;
 
         <div class="col-xs-2">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        </div>
+
+        <div class="col-xs-2">
+            <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
         </div>
 
         <div class="col-xs-2">
