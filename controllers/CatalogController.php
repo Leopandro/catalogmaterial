@@ -3,7 +3,6 @@
 namespace app\controllers;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
-use app\models\CharacteristicGroupSearch;
 use app\models\CharacteristicGroupTemp;
 use app\models\GroupSectionForm;
 use app\models\SectionForm;
@@ -29,6 +28,7 @@ class CatalogController extends \yii\web\Controller
             ]
         ];
     }
+
     public function actionIndex()
     {
         $section = new SectionForm();
@@ -36,23 +36,8 @@ class CatalogController extends \yii\web\Controller
         /*
          * init root
          */
-        $sorted = false;
-        $length = count($leaves) - 1;
-        //
-        while ($sorted == false)
-        {
-            $sorted = true;
-            for ($i = 0; $i < $length; $i++)
-            {
-                if ($leaves[$i]->name > $leaves[$i+1]->name)
-                {
-                    $k = $leaves[$i];
-                    $leaves[$i] = $leaves[$i+1];
-                    $leaves[$i+1] = $k;
-                    $sorted = false;
-                }
-            }
-        }
+
+        $leaves = $this->sortTree($leaves);
 
         if (!$leaves)
         {
@@ -217,6 +202,28 @@ class CatalogController extends \yii\web\Controller
             ]);
         }
         return $this->redirect(['catalog/index']);
+    }
+
+    public function sortTree($leaves)
+    {
+        $sorted = false;
+        $length = count($leaves) - 1;
+        //
+        while ($sorted == false)
+        {
+            $sorted = true;
+            for ($i = 0; $i < $length; $i++)
+            {
+                if ($leaves[$i]->name > $leaves[$i+1]->name)
+                {
+                    $k = $leaves[$i];
+                    $leaves[$i] = $leaves[$i+1];
+                    $leaves[$i+1] = $k;
+                    $sorted = false;
+                }
+            }
+        }
+        return $leaves;
     }
 
 //    public function translit($str)
