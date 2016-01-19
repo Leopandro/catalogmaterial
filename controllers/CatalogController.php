@@ -74,7 +74,7 @@ class CatalogController extends \yii\web\Controller
         $id = ($_GET['id']);
         if ($model->load(Yii::$app->request->post()))
         {
-            $root = Catalog::findOne(['id' => $model->id]);
+            $root = Catalog::findOne(['id' => $id]);
             $subsection = new Catalog(['name' => $model->name]);
             $subsection->appendTo($root);
             return $this->redirect(['catalog/index']);
@@ -160,6 +160,14 @@ class CatalogController extends \yii\web\Controller
             }
             /*
              * Скопировали
+             */
+
+            /*
+             * Удаляем
+             */
+            CharacteristicGroupTemp::deleteAll(['id_user' => Yii::$app->user->identity->id]);
+            /*
+             * Удалили
              */
             return $this->redirect(['catalog/index']);
         }
