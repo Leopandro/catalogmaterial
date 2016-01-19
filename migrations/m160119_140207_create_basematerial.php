@@ -7,7 +7,12 @@ class m160119_140207_create_basematerial extends Migration
 {
     public function up()
     {
-        $this->dropTable('base_material');
+
+        if($this->db->schema->getTableSchema('base_material', true) !== null) {
+            $this->dropTable('base_material');
+        }
+
+
         $this->createTable('base_material', [
             'id' => 'pk',
             'name' => 'VARCHAR(45) NULL DEFAULT NULL',
@@ -20,7 +25,10 @@ class m160119_140207_create_basematerial extends Migration
 
     public function down()
     {
-        $this->dropTable('base_material');
+        if($this->db->schema->getTableSchema('base_material', true) !== null) {
+            $this->dropTable('base_material');
+        }
+        return true;
     }
 
     /*

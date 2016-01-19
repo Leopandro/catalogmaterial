@@ -7,12 +7,23 @@ class m160118_175517_delete_name_table_from_char_group extends Migration
 {
     public function up()
     {
-        $this->dropColumn('characteristic_group', 'name_table');
+
+        $table = Yii::$app->db->schema->getTableSchema('characteristic_group');
+        if(isset($table->columns['name_table'])) {
+            $this->dropColumn('characteristic_group', 'name_table');
+        }
+
+
     }
 
     public function down()
     {
-        $this->addColumn('characteristic_group', 'name_table', Schema::TYPE_STRING. ' NULL');
+        $table = Yii::$app->db->schema->getTableSchema('characteristic_group');
+        if(!isset($table->columns['name_table'])) {
+            $this->addColumn('characteristic_group', 'name_table', Schema::TYPE_STRING. ' NULL');
+        }
+
+
         return true;
     }
 
