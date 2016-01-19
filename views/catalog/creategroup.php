@@ -22,7 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $form->field($model, 'name') ?>
 </div>
     <div class="characteristic-group-index">
-        <h5><b><? echo 'Характеристики группы:' ?></b></h5>
 
         <p>
             <?= Html::a(
@@ -37,6 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]
                 ) ?>
         </p>
+        <h5><b><? echo 'Характеристики группы:' ?></b></h5>
+
         <?= GridView::widget([
             'dataProvider' => $attributesModel,
             //'filterModel' => $searchModel,

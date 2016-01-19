@@ -24,11 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <?= $form->field($model, 'name') ?>
     <div class="characteristic-group-index">
-        <h5><b><? echo 'Характеристики группы:' ?></b></h5>
 
         <p>
             <?= Html::a('Добавить характеристику', ['characteristic/create', 'id_group' => $_GET['id']], ['class' => 'btn btn-success']) ?>
         </p>
+
+        <h5><b><? echo 'Характеристики группы:' ?></b></h5>
+
 
         <?= GridView::widget([
             'dataProvider' => $attributesModel,
