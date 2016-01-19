@@ -11,7 +11,6 @@ class m160118_135029_create_characteristic_group extends Migration
             'id' => 'pk',
             'name' => 'VARCHAR(255) NULL DEFAULT NULL',
             'label' => 'VARCHAR(255) NULL DEFAULT NULL',
-            'name_table' => 'VARCHAR(255) NULL DEFAULT NULL',
             'type_value' => 'INT(11) NOT NULL DEFAULT \'0\'',
             'is_required' => 'INT(1) NOT NULL DEFAULT \'0\'',
             'id_group' => 'INT(1) NOT NULL DEFAULT \'0\'',

@@ -3,21 +3,25 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\CharacteristicGroup;
+
 /* @var $this yii\web\View */
-/* @var $model app\models\CharacteristicGroup */
+/* @var $model app\models\CharacteristicGroupTemp */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+
 <?
-
-    $model->id_group = $_GET['id_group'];
-
+    $model->id_user = Yii::$app->user->identity->id;
 ?>
-<div class="characteristic-group-form">
+<div class="characteristic-group-temp-form">
     <div class="col-xs-12">
         <?php $form = ActiveForm::begin(); ?>
 
         <div class="col-xs-2">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        </div>
+
+        <div class="col-xs-2">
+            <?= $form->field($model, 'label')->textInput() ?>
         </div>
 
         <div class="col-xs-2">
@@ -29,7 +33,7 @@ use app\models\CharacteristicGroup;
         </div>
 
         <div class="hidden">
-            <?= $form->field($model, 'id_group')->textInput() ?>
+            <?= $form->field($model, 'id_user')->textInput() ?>
         </div>
 
         <div class="col-xs-2">
@@ -37,10 +41,11 @@ use app\models\CharacteristicGroup;
         </div>
 
     </div>
-    <div>
-        <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        </div>
-        <?php ActiveForm::end(); ?>
+
+    <div class="form-group">
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
+
+    <?php ActiveForm::end(); ?>
+
 </div>

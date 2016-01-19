@@ -33,10 +33,12 @@ class CharacteristicGroupTemp extends \yii\db\ActiveRecord
     {
         return [
             [['type_value', 'is_required', 'is_visible', 'id_user'], 'integer'],
-            [['id_user'], 'required'],
-            [['name', 'label', 'name_table'], 'string', 'max' => 255]
+            [['id_user', 'name'], 'required'],
+            [['name', 'label'], 'string', 'max' => 255]
         ];
     }
+
+
 
     /**
      * @inheritdoc
@@ -44,14 +46,13 @@ class CharacteristicGroupTemp extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'label' => 'Label',
-            'name_table' => 'Name Table',
-            'type_value' => 'Type Value',
-            'is_required' => 'Is Required',
-            'is_visible' => 'Is Visible',
-            'id_user' => 'Id User',
+            'id' => 'Номер',
+            'name' => 'Имя аттрибута',
+            'label' => 'Описание',
+            'type_value' => 'Тип значения',
+            'is_required' => 'Обязателен?',
+            'id_group' => 'Id Group',
+            'is_visible' => 'Скрытый?',
         ];
     }
 }

@@ -7,6 +7,7 @@
  */
 use yii\grid\GridView;
 use yii\helpers\Html;
+use app\models\CharacteristicGroup;
 use yii\widgets\ActiveForm;
 $this->title = 'Создать группу';
 $this->params['breadcrumbs'][] = $this->title;
@@ -24,9 +25,18 @@ $this->params['breadcrumbs'][] = $this->title;
         <h5><b><? echo 'Характеристики группы:' ?></b></h5>
 
         <p>
-            <?= Html::a('Добавить характеристику', ['characteristic/create', 'id_group' => $_GET['id']], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(
+                'Добавить характеристику',
+                [
+                    '/characteristictemp/create',
+                    'id_user' => Yii::$app->user->identity->id,
+                    'referer' => \yii\helpers\Url::current()
+                ],
+                [
+                    'class' => 'btn btn-success',
+                ]
+                ) ?>
         </p>
-
         <?= GridView::widget([
             'dataProvider' => $attributesModel,
             //'filterModel' => $searchModel,
@@ -71,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             {
                                 return Html::a(
                                     'Редактировать',
-                                    ['characteristic/update', 'id' => $model->id],
+                                    ['characteristictemp/update', 'id' => $model->id, 'referer' => \yii\helpers\Url::current()],
                                     [
                                         'class' => 'btn btn-success'
                                     ]
@@ -81,10 +91,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             {
                                 return Html::a(
                                     'Удалить',
-                                    ['characteristic/delete', 'id' => $model->id],
+                                    ['characteristictemp/delete', 'id' => $model->id, 'referer' => \yii\helpers\Url::current()],
                                     [
                                         'data-confirm' => 'Удалить?',
-                                        'class' => 'btn btn-danger'
+                                        'class' => 'btn btn-danger',
+                                        'data-method' => 'post'
                                     ]
                                 );
                             }

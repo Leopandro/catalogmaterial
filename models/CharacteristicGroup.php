@@ -35,7 +35,7 @@ class CharacteristicGroup extends \yii\db\ActiveRecord
     {
         return [
             [['type_value', 'is_required', 'id_group', 'is_visible'], 'integer'],
-            [['name', 'label', 'name_table'], 'string', 'max' => 255]
+            [['name', 'label'], 'string', 'max' => 255]
         ];
     }
 
@@ -47,8 +47,7 @@ class CharacteristicGroup extends \yii\db\ActiveRecord
         return [
             'id' => 'Номер',
             'name' => 'Имя аттрибута',
-            'label' => 'Label',
-            'name_table' => 'Name Table',
+            'label' => 'Описание',
             'type_value' => 'Тип значения',
             'is_required' => 'Обязателен?',
             'id_group' => 'Id Group',

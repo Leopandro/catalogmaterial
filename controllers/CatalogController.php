@@ -65,8 +65,6 @@ class CatalogController extends \yii\web\Controller
             'section' => $section
         ]);
     }
-
-
     /*
      * Создание каталога
      */
@@ -105,7 +103,6 @@ class CatalogController extends \yii\web\Controller
             'model' => $model
         ]);
     }
-
     /*
      * Редактирование каталога
      */
@@ -131,7 +128,6 @@ class CatalogController extends \yii\web\Controller
             ]);
         }
     }
-
     /*
      * Создание группы
      */
@@ -148,6 +144,23 @@ class CatalogController extends \yii\web\Controller
             $group = new Catalog(['name' => $model->name, 'table_name' => $model->table_name, 'node_type' => 1]);
             $group->appendTo($root);
 
+            /*
+             * Копируем
+             */
+            $charGroupTemp = CharacteristicGroupTemp::findAll(['id_user' => Yii::$app->user->identity->id]);
+            foreach ($charGroupTemp as $item)
+            {
+                $newGroup = new CharacteristicGroup();
+                $newGroup->name = $item->name;
+                $newGroup->label = $item->label;
+                $newGroup->type_value = $item->type_value;
+                $newGroup->is_required = $item->is_required;
+                $newGroup->id_group = $group->id;
+                $newGroup->save();
+            }
+            /*
+             * Скопировали
+             */
             return $this->redirect(['catalog/index']);
         }
         if (($root = Catalog::findOne(['id' => $id])) &&($root->node_type == 0))
@@ -167,12 +180,13 @@ class CatalogController extends \yii\web\Controller
 //        ]);
     }
 
+    /*
+     * Редактирование группы
+     */
     public function actionEditgroup()
     {
         $model = new GroupSectionForm();
         $id = ($_GET['id']);
-//        $searchModel = new CharacteristicGroupSearch();
-//        $attributesModel = $searchModel->search(['id_group' => $id]);
         $query = CharacteristicGroup::find()->where(['id_group' => $id]);
         $attributesModel = new ActiveDataProvider([
             'query' => $query
