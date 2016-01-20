@@ -100,6 +100,7 @@ class Catalog extends ActiveRecord
     {
         $childs = $root->children(1)->all();
         $arr = [];
+        $childs = self::sortTree($childs);
         foreach ($childs as $child)
         {
             $obj = [];
@@ -132,6 +133,28 @@ class Catalog extends ActiveRecord
         $obj['nodes'] = self::ShowChildsFix($result['0']);
         $obj = (object) $obj;
         $leaves[] = $obj;
+        return $leaves;
+    }
+
+    public static function sortTree($leaves)
+    {
+        $sorted = false;
+        $length = count($leaves) - 1;
+        //
+        while ($sorted == false)
+        {
+            $sorted = true;
+            for ($i = 0; $i < $length; $i++)
+            {
+                if ($leaves[$i]->name > $leaves[$i+1]->name)
+                {
+                    $k = $leaves[$i];
+                    $leaves[$i] = $leaves[$i+1];
+                    $leaves[$i+1] = $k;
+                    $sorted = false;
+                }
+            }
+        }
         return $leaves;
     }
 

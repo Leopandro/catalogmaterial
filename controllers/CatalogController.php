@@ -34,12 +34,6 @@ class CatalogController extends \yii\web\Controller
         $section = new SectionForm();
 
         $leaves = Catalog::ShowTreeFix();
-//        $result = Catalog::find()->roots()->all();
-//        $leaves = [];
-//        $obj = [];
-//        $obj['text'] = $result['0']->name;
-//        $obj = (object) $obj;
-//        $leaves[] = $obj;
         $leaves = json_encode($leaves);
 
         /*
@@ -213,27 +207,6 @@ class CatalogController extends \yii\web\Controller
         return $this->redirect(['catalog/index']);
     }
 
-    public function sortTree($leaves)
-    {
-        $sorted = false;
-        $length = count($leaves) - 1;
-        //
-        while ($sorted == false)
-        {
-            $sorted = true;
-            for ($i = 0; $i < $length; $i++)
-            {
-                if ($leaves[$i]->name > $leaves[$i+1]->name)
-                {
-                    $k = $leaves[$i];
-                    $leaves[$i] = $leaves[$i+1];
-                    $leaves[$i+1] = $k;
-                    $sorted = false;
-                }
-            }
-        }
-        return $leaves;
-    }
 
 //    public function translit($str)
 //    {
