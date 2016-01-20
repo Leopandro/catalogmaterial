@@ -27,7 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
-            'label',
             'name_table',
             'type_value',
             // 'is_required',

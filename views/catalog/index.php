@@ -6,7 +6,6 @@ $this->title = 'Каталог разделов';
 $this->params['breadcrumbs'][] = $this->title;
 
 $script = <<< JS
-
     $('#section').click(function(){
         var x = $('.node-selected');
         var id = $(x).attr('id');
@@ -56,7 +55,7 @@ JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>
 <div class="col-xs-2"><h4>Каталог разделов</h4></div>
-<div class="col-xs-6">
+<div class="col-xs-8">
     <p>
         <button type="button" class="btn btn-primary" id="section">Создать раздел</button>
         <button type="button" class="btn btn-success" id="edit">Редактировать раздел</button>

@@ -22,7 +22,8 @@ class AppAsset extends AssetBundle
         'css/common.css'
     ];
     public $js = [
-        'js/bootstrap-treeview.js'
+        'js/bootstrap-treeview.js',
+        'js/cookie.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

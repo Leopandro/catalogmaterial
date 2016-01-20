@@ -24,10 +24,6 @@ use app\models\CharacteristicGroup;
         </div>
 
         <div class="col-xs-2">
-            <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
-        </div>
-
-        <div class="col-xs-2">
             <?= $form->field($model, 'type_value')->dropDownList(CharacteristicGroup::getDataForDropDownList()); ?>
         </div>
 

@@ -11,6 +11,17 @@ use app\models\CharacteristicGroup;
 use yii\widgets\ActiveForm;
 $this->title = 'Создать группу';
 $this->params['breadcrumbs'][] = $this->title;
+
+$script = <<< JS
+$('.btn').click(function()
+{
+    setCookie('group-name', $('#groupsectionform-name').val(), 999);
+});
+$('#groupsectionform-name').val(getCookie('group-name'));
+JS;
+
+
+$this->registerJs($script, yii\web\View::POS_READY);
 ?>
 <div class="menu-form">
 <!--    --><?// echo $message?>
@@ -45,10 +56,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ['class' => 'yii\grid\SerialColumn'],
 
                 'name',
-                [
-                    'attribute' => 'label',
-                    'header' => 'Описание'
-                ],
                 [
                     'attribute' => 'type_value',
                     'header' => 'Тип значения',

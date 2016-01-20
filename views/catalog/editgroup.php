@@ -40,10 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 'name',
                 [
-                    'attribute' => 'label',
-                    'header' => 'Описание'
-                ],
-                [
                     'attribute' => 'type_value',
                     'header' => 'Тип значения',
                     'value' => function($model)
