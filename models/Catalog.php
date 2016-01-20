@@ -112,6 +112,7 @@ class Catalog extends ActiveRecord
             if ($child->node_type == 0)
             {
                 $obj['icon'] = 'glyphicon glyphicon-folder-open';
+                $obj['state']['expanded'] = true;
             }
             else if ($child->node_type == 1)
             {
