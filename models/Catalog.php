@@ -104,7 +104,12 @@ class Catalog extends ActiveRecord
         foreach ($childs as $child)
         {
             $obj = [];
+            $state = [
+                'expanded' => true
+            ];
+            $state = (object) $state;
             $obj['text'] = $child->name;
+            $obj['state'] = $state;
             $obj['id'] = $child->id;
             if ($child->node_type == 0)
             {

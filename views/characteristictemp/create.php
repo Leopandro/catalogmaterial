@@ -6,13 +6,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\CharacteristicGroupTemp */
 
-$this->title = 'Create Characteristic Group Temp';
-$this->params['breadcrumbs'][] = ['label' => 'Characteristic Group Temps', 'url' => ['index']];
+$this->title = 'Создать характеристику группы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="characteristic-group-temp-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <?= $this->render('_form', [
         'model' => $model,

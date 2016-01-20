@@ -50,9 +50,9 @@ class CharacteristicGroupTemp extends \yii\db\ActiveRecord
             'name' => 'Имя аттрибута',
             'label' => 'Описание',
             'type_value' => 'Тип значения',
-            'is_required' => 'Обязателен?',
+            'is_required' => 'Обязательность',
             'id_group' => 'Id Group',
-            'is_visible' => 'Скрытый?',
+            'is_visible' => 'Видимость',
         ];
     }
 }

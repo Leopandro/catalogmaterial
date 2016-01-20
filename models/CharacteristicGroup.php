@@ -45,21 +45,20 @@ class CharacteristicGroup extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'Номер',
-            'name' => 'Имя аттрибута',
+            'name' => 'Имя атрибута',
             'label' => 'Описание',
             'type_value' => 'Тип значения',
-            'is_required' => 'Обязателен?',
+            'is_required' => 'Обязательность',
             'id_group' => 'Id Group',
-            'is_visible' => 'Скрытый?',
+            'is_visible' => 'Видимость',
         ];
     }
 
     public static function getDataForDropDownList()
     {
         return [
-            '0' => 'Любое',
-            '1' => 'Числовое',
-            '2'=> 'Текст'
+            '0' => 'Число',
+            '1' => 'Текст'
         ];
     }
     public static function getLabelForRequired()
