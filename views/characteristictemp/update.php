@@ -5,10 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\CharacteristicGroupTemp */
 
-$this->title = 'Update Characteristic Group Temp: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Characteristic Group Temps', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Редактировать характеристику группы';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="characteristic-group-temp-update">
 

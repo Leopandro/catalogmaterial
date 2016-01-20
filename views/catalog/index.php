@@ -51,6 +51,7 @@ $script = <<< JS
         }
     });
     $('#tree').treeview({data: $leaves});
+    setCookie('group-name', '');
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>

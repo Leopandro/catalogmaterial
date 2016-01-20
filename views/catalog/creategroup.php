@@ -13,11 +13,18 @@ $this->title = 'Создать группу';
 $this->params['breadcrumbs'][] = $this->title;
 
 $script = <<< JS
-$('.btn').click(function()
+$('a.btn').click(function()
 {
-    setCookie('group-name', $('#groupsectionform-name').val(), 999);
+    if (getCookie('group-name') != null)
+    {
+        setCookie('group-name', $('#groupsectionform-name').val(), 999);
+    }
 });
 $('#groupsectionform-name').val(getCookie('group-name'));
+$('#create_group').click(function()
+{
+    setCookie('group-name', '');
+});
 JS;
 
 
@@ -113,5 +120,5 @@ $this->registerJs($script, yii\web\View::POS_READY);
             ],
         ]); ?>
     </div>
-<?= Html::submitButton('Добавить группу', ['class' => 'btn btn-success']) ?>
+<?= Html::submitButton('Добавить группу', ['id' => 'create_group', 'class' => 'btn btn-success']) ?>
 <?php ActiveForm::end(); ?>
