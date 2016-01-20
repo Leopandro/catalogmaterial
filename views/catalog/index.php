@@ -5,9 +5,6 @@ use yii\helpers\Html;
 $this->title = 'Каталог разделов';
 $this->params['breadcrumbs'][] = $this->title;
 
-$dataTreeView = \app\models\Catalog::showTree($leaves);
-$dataTreeViewJson = yii\helpers\Json::encode(\app\models\Catalog::showTree($leaves));
-
 $script = <<< JS
 
     $('#section').click(function(){
@@ -15,7 +12,7 @@ $script = <<< JS
         var id = $(x).attr('id');
         var node_type = $(x).attr('node_type');
         console.log('id:',id,' node_type:',node_type);
-        if ((node_type == undefined) && (id))
+        if ((node_type == 0) && (id))
         {
             var url = 'index.php?r=catalog%2Fcreate&id='+id;
             $(location).attr('href',url);
@@ -26,7 +23,7 @@ $script = <<< JS
         var id = $(x).attr('id');
         var node_type = $(x).attr('node_type');
         console.log('id:',id,' node_type:',node_type);
-        if ((id) && (node_type == undefined))
+        if ((id) && (node_type == 0))
         {
             var url = 'index.php?r=catalog%2Fedit&id='+id;
             $(location).attr('href',url);
@@ -37,7 +34,7 @@ $script = <<< JS
         var id = $(x).attr('id');
         var node_type = $(x).attr('node_type');
         console.log('id:',id,' node_type:',node_type);
-        if ((id) && (node_type == undefined))
+        if ((id) && (node_type == 0))
         {
             var url = 'index.php?r=catalog%2Fgroup&id='+id;
             $(location).attr('href',url);
@@ -54,7 +51,7 @@ $script = <<< JS
             $(location).attr('href', url);
         }
     });
-    $('#tree').treeview({data: $dataTreeViewJson});
+    $('#tree').treeview({data: $leaves});
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>

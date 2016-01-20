@@ -32,19 +32,28 @@ class CatalogController extends \yii\web\Controller
     public function actionIndex()
     {
         $section = new SectionForm();
-        $leaves = Catalog::find()->all();
+
+        $leaves = Catalog::ShowTreeFix();
+//        $result = Catalog::find()->roots()->all();
+//        $leaves = [];
+//        $obj = [];
+//        $obj['text'] = $result['0']->name;
+//        $obj = (object) $obj;
+//        $leaves[] = $obj;
+        $leaves = json_encode($leaves);
+
         /*
          * init root
          */
 
-        $leaves = $this->sortTree($leaves);
+        //$leaves = $this->sortTree($leaves);
 
-        if (!$leaves)
-        {
-            $root = new Catalog(['name' => 'Разделы']);
-            $root->makeRoot();
-            $leaves = Catalog::find()->all();
-        }
+//        if (!$leaves)
+//        {
+//            $root = new Catalog(['name' => 'Разделы']);
+//            $root->makeRoot();
+//            $leaves = Catalog::find()->all();
+//        }
         return $this->render('index', [
             'leaves' => $leaves,
             'section' => $section

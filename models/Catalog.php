@@ -96,6 +96,44 @@ class Catalog extends ActiveRecord
         return $result;
     }
 
+    public static function ShowChildsFix($root)
+    {
+        $childs = $root->children(1)->all();
+        $arr = [];
+        foreach ($childs as $child)
+        {
+            $obj = [];
+            $obj['text'] = $child->name;
+            $obj['id'] = $child->id;
+            if ($child->node_type == 0)
+            {
+                $obj['node_type'] = 0;
+                $obj['icon'] = 'glyphicon glyphicon-folder-open';
+            }
+            else if ($child->node_type == 1)
+            {
+                $obj['node_type'] = 1;
+                $obj['icon'] = 'glyphicon glyphicon-book';
+            }
+            $obj['nodes'] = self::ShowChildsFix($child);
+            $obj = (object) $obj;
+            $arr[] = $obj;
+        }
+        return $arr;
+    }
+
+    public static function ShowTreeFix()
+    {
+        $result = Catalog::find()->roots()->all();
+        $leaves = [];
+        $obj = [];
+        $obj['text'] = $result['0']->name;
+        $obj['id'] = $result['0']->id;
+        $obj['nodes'] = self::ShowChildsFix($result['0']);
+        $obj = (object) $obj;
+        $leaves[] = $obj;
+        return $leaves;
+    }
 
     public static function getTreeDataForAccessGroups() {
 
