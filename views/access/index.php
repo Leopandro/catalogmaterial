@@ -8,7 +8,7 @@ use app\models\Catalog;
 $this->title = 'Права доступа';
 $this->params['breadcrumbs'][] = $this->title;
 
-$dataTreeView = \app\models\Catalog::getTreeDataForAccessGroupsAndSelected($modelForm->idsAllowAccessGroupsMaterial);
+$dataTreeView = \app\models\Catalog::ShowTreeForAccessGroupsMaterialAndSelected($modelForm->idsAllowAccessGroupsMaterial);
 $dataTreeViewJson = yii\helpers\Json::encode($dataTreeView);
 
 $addressAccessIndex = yii\helpers\Url::toRoute(['access/index']);

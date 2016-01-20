@@ -103,22 +103,23 @@ class Catalog extends ActiveRecord
         $childs = self::sortTree($childs);
         foreach ($childs as $child)
         {
-            $obj = [];
-            $obj['text'] = $child->name;
-            $obj['id'] = $child->id;
+            $obj = [
+                'text'=>$child->name,
+                'id'=>$child->id,
+                'node_type'=>$child->node_type
+            ];
+
             if ($child->node_type == 0)
             {
-                $obj['node_type'] = 0;
                 $obj['icon'] = 'glyphicon glyphicon-folder-open';
             }
             else if ($child->node_type == 1)
             {
-                $obj['node_type'] = 1;
                 $obj['icon'] = 'glyphicon glyphicon-book';
             }
+
             $obj['nodes'] = self::ShowChildsFix($child);
-            $obj = (object) $obj;
-            $arr[] = $obj;
+            $arr[] = (object)$obj;
         }
         return $arr;
     }
@@ -127,12 +128,12 @@ class Catalog extends ActiveRecord
     {
         $result = Catalog::find()->roots()->all();
         $leaves = [];
-        $obj = [];
-        $obj['text'] = $result['0']->name;
-        $obj['id'] = $result['0']->id;
-        $obj['nodes'] = self::ShowChildsFix($result['0']);
-        $obj = (object) $obj;
-        $leaves[] = $obj;
+        $obj = [
+            'text'=>$result[0]->name,
+            'id'=>$result[0]->id,
+            'nodes'=>$obj['nodes'] = self::ShowChildsFix($result[0])
+        ];
+        $leaves[] = (object)$obj;
         return $leaves;
     }
 
@@ -157,6 +158,57 @@ class Catalog extends ActiveRecord
         }
         return $leaves;
     }
+
+    //-------------------------------------------
+    // functions of tree for access page
+
+    public static function ShowChildsForAccessGroupsMaterial($root,$idsChecked)
+    {
+        $childs = $root->children(1)->all();
+        $arr = [];
+        $childs = self::sortTree($childs);
+        foreach ($childs as $child)
+        {
+            $obj = [
+                'text'=>$child->name,
+                'id'=>$child->id,
+                'node_type'=>$child->node_type
+            ];
+
+            if ($child->node_type == 0)
+            {
+                $obj['icon'] = 'glyphicon glyphicon-folder-open';
+                $obj['state']['expanded'] = true;
+            }
+            else if ($child->node_type == 1)
+            {
+                $obj['icon'] = 'glyphicon glyphicon-book';
+            }
+
+            if(in_array($child->id,$idsChecked))
+                $obj['state']['checked'] = true;
+
+            $obj['nodes'] = self::ShowChildsForAccessGroupsMaterial($child,$idsChecked);
+            $arr[] = (object)$obj;
+        }
+        return $arr;
+    }
+
+    public static function ShowTreeForAccessGroupsMaterialAndSelected($idsChecked=[])
+    {
+        $result = Catalog::find()->roots()->all();
+        $leaves = [];
+        $obj = [
+            'text'=>$result[0]->name,
+            'id'=>$result[0]->id,
+            'nodes'=>$obj['nodes'] = self::ShowChildsForAccessGroupsMaterial($result[0],$idsChecked)
+        ];
+        $leaves[] = (object)$obj;
+        return $leaves;
+    }
+
+    // ------------------------------------------
+
 
     public static function getTreeDataForAccessGroups() {
 

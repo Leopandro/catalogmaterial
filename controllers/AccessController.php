@@ -38,7 +38,7 @@ class AccessController extends Controller
 
     public function actionIndex()
     {
-        $leaves = Catalog::find()->all();
+        //$leaves = Catalog::find()->all();
         $allUsersWithRoleUser = User::getAllUsersForDropDownListByRole("user");
 
         $modelForm = new AccessGroupsFormModel;
@@ -66,7 +66,7 @@ class AccessController extends Controller
 
 
 
-        return $this->render('index',['users'=>$allUsersWithRoleUser,'modelForm'=>$modelForm,'leaves'=>$leaves]);
+        return $this->render('index',['users'=>$allUsersWithRoleUser,'modelForm'=>$modelForm]);
     }
 
 }

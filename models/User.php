@@ -20,7 +20,6 @@ class User extends BaseUser
         if($roleData)
             $data = ArrayHelper::map(User::find()->where(["role_id"=>$roleData->id])->asArray()->all(),'id','username');
 
-
         return $data;
     }
 
