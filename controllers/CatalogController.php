@@ -125,18 +125,17 @@ class CatalogController extends \yii\web\Controller
     {
         $id = ($_GET['id']);
 
-
         $model = new GroupSectionForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate())
         {
             $root = Catalog::findOne(['id' => $id]);
             $group = new Catalog(['name' => $model->name, 'table_name' => $model->table_name, 'node_type' => 1]);
+            $group->table_name = StringUtils::translit($group->name);
             $group->appendTo($root);
 
-            /*
-             * Копируем
-             */
+            // Копируем характеристики
+
             $charGroupTemp = CharacteristicGroupTemp::findAll(['id_user' => Yii::$app->user->identity->id]);
             foreach ($charGroupTemp as $item)
             {
@@ -148,17 +147,14 @@ class CatalogController extends \yii\web\Controller
                 $newGroup->id_group = $group->id;
                 $newGroup->save();
             }
-            /*
-             * Скопировали
-             */
+            // -------------
 
-            /*
-             * Удаляем
-             */
+            // Создаем таблицу
+            $this->createTable($group);
+
+            // Удаляем темп
             CharacteristicGroupTemp::deleteAll(['id_user' => Yii::$app->user->identity->id]);
-            /*
-             * Удалили
-             */
+            // -------------
             return $this->redirect(['catalog/index']);
         }
         if (($root = Catalog::findOne(['id' => $id])) &&($root->node_type == 0))
@@ -241,5 +237,48 @@ class CatalogController extends \yii\web\Controller
         return json_encode($result);
     }
 
+    private function createTable($group)
+    {
+        $tblName = $group->table_name;
+        $sql = 'CREATE TABLE '.$tblName.' (
+          ID INT NOT NULL,
+';
+        $columns = CharacteristicGroup::findAll(['id_group' => $group->id]);
+        if ($columns[0])
+        {
+            foreach ($columns as $column)
+            {
+                $sqlAdd = StringUtils::translit($column->name);
 
+                //-----------------------
+
+                if ($column->type_value == 0)
+                    $sqlAdd .= ' INT(11) ';
+                elseif ($column->type_value == 1)
+                    $sqlAdd .= ' VARCHAR(255) ';
+                else
+                    $sqlAdd .= ' VARCHAR(255) ';
+
+                //-----------------------
+
+                if ($column->is_required == 0)
+                    $sqlAdd .= ' NOT NULL ';
+                elseif ($column->is_required == 1)
+                    $sqlAdd .= ' NULL ';
+                else
+                    $sqlAdd .= ' NOT NULL ';
+
+                //-----------------------
+                $sqlAdd .= ',';
+                $sql .= $sqlAdd;
+            }
+            $sql .= 'FOREIGN KEY (id) REFERENCES base_material(id),';
+            $sql .= 'PRIMARY KEY(id)';
+            $sql .= ')';
+            $connection = Yii::$app->getDb();
+            $command = $connection->createCommand($sql);
+            $result = $command->query();
+            var_dump($result);
+        }
+    }
 }
