@@ -67,6 +67,7 @@ $this->registerJs($script, yii\web\View::POS_READY);
                     ]
                 ),
             'contentOptions' => ['style' => 'width:160px;','class'=>'date-verify-column'],
+            'headerOptions' => ['style' => 'width:160px;'],
         ],
 
         [
