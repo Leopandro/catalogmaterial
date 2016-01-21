@@ -44,6 +44,10 @@ AppAsset::register($this);
 
     <div class="container">
         <?= Breadcrumbs::widget([
+            'homeLink'=>[
+                'label' => 'Главная',  // required
+                'url' =>  \yii\helpers\Url::toRoute('/catalog/index'),      // optional, will be processed by Url::to()
+            ],
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
         <?= $content ?>

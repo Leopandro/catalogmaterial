@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\BaseMaterial;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
 use app\models\CharacteristicGroupTemp;
@@ -207,4 +208,38 @@ class CatalogController extends \yii\web\Controller
         }
         return $this->redirect(['catalog/index']);
     }
+
+
+    //---------------------------------------------------------------------------------------
+
+    // сверка дат
+    public function actionReviseDates() {
+
+        $model = new BaseMaterial();
+        $model->load(Yii::$app->request->get());
+        return $this->render('reviseDates',['model'=>$model,'filter'=>$model]);
+
+    }
+
+    public function actionRefreshReviseDataOfMaterial() {
+
+        $result = ['success'=>true,'message'=>'Дата сверки обновлена'];
+
+        $id = Yii::$app->request->get('id');
+
+        $customer = BaseMaterial::findOne($id);
+        if($customer) {
+            $customer->date_verify = date('Y-m-d H:i:s');
+            $customer->update();
+
+            $result['date'] = date('d.m.Y',strtotime($customer->date_verify));
+        } else {
+            $result['success'] = false;
+            $result['message'] = 'Материал не найден';
+        }
+
+        return json_encode($result);
+    }
+
+
 }
