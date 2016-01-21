@@ -4,7 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\data\ActiveDataProvider;
-
+use yii\db\mysql\Schema;
 /**
  * This is the model class for table "base_material".
  *
@@ -80,7 +80,44 @@ class BaseMaterial extends \yii\db\ActiveRecord
             ]
 
         ]);
-
     }
 
+    public static function updateTable($group)
+    {
+        $columns = CharacteristicGroup::findAll(['id_group' => $group->id]);
+        $sql = Yii::$app->db->createCommand();
+
+        //Проверка изменений
+        foreach ($columns as $column)
+        {
+            if (!Yii::$app->db->schema->getTableSchema($group->table_name)->columns[$column->label])
+            {
+                $sql->addColumn($group->table_name, $column->label, Schema::TYPE_STRING. '(255) NOT NULL')->execute();
+            }
+        }
+    }
+
+    public static function createTable($group)
+    {
+        $columns = CharacteristicGroup::findAll(['id_group' => $group->id]);
+
+
+
+        // Создаем таблицу
+        $sql = Yii::$app->db->createCommand();
+        $sql->createTable($group->table_name, [
+            'id' => 'pk',
+        ])->execute();
+
+        //Добавляем колонки
+        foreach ($columns as $column)
+        {
+            $columnName = StringUtils::translit($column->name);
+            $sql->addColumn($group->table_name, $columnName, Schema::TYPE_STRING.' NOT NULL')->execute();
+        }
+
+        //и связываем id c id base_material
+        $sql->addForeignKey(Yii::$app->security->generateRandomString(), $group->table_name, 'id', 'base_material', 'id', 'NO ACTION', 'NO ACTION')
+            ->execute();
+    }
 }
