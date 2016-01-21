@@ -7,9 +7,9 @@ use app\models\CharacteristicGroup;
 use app\models\CharacteristicGroupTemp;
 use app\models\GroupSectionForm;
 use app\models\SectionForm;
+use app\models\StringUtils;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
-use app\models\StringUtils;
 use Yii;
 
 
@@ -44,12 +44,12 @@ class CatalogController extends \yii\web\Controller
 
         //$leaves = $this->sortTree($leaves);
 
-//        if (!$leaves)
-//        {
-//            $root = new Catalog(['name' => 'Разделы']);
-//            $root->makeRoot();
-//            $leaves = Catalog::find()->all();
-//        }
+        if (!$leaves)
+        {
+            $root = new Catalog(['name' => 'Разделы']);
+            $root->makeRoot();
+            $leaves = Catalog::find()->all();
+        }
         return $this->render('index', [
             'leaves' => $leaves,
             'section' => $section
@@ -131,7 +131,7 @@ class CatalogController extends \yii\web\Controller
         {
             $root = Catalog::findOne(['id' => $id]);
             $group = new Catalog(['name' => $model->name, 'table_name' => $model->table_name, 'node_type' => 1]);
-            $group->table_name = StringUtils::translit($group->name);
+            $group->table_name = Yii::$app->security->generateRandomString();
             $group->appendTo($root);
 
             // Копируем характеристики
@@ -141,7 +141,7 @@ class CatalogController extends \yii\web\Controller
             {
                 $newGroup = new CharacteristicGroup();
                 $newGroup->name = $item->name;
-                $newGroup->label = StringUtils::translit($newGroup->name);
+                $newGroup->label = StringUtils::translit($item->name);
                 $newGroup->type_value = $item->type_value;
                 $newGroup->is_required = $item->is_required;
                 $newGroup->id_group = $group->id;
@@ -150,7 +150,7 @@ class CatalogController extends \yii\web\Controller
             // -------------
 
             // Создаем таблицу
-            $this->createTable($group);
+            BaseMaterial::createTable($group);
 
             // Удаляем темп
             CharacteristicGroupTemp::deleteAll(['id_user' => Yii::$app->user->identity->id]);
@@ -191,6 +191,7 @@ class CatalogController extends \yii\web\Controller
             $group = Catalog::findOne(['id' => $id]);
             $group->name = $model->name;
             $group->save();
+            BaseMaterial::updateTable($group);
             return $this->redirect(['catalog/index']);
         }
         if (($root = Catalog::findOne(['id' => $id])) &&($root->node_type == 1))
@@ -235,50 +236,5 @@ class CatalogController extends \yii\web\Controller
         }
 
         return json_encode($result);
-    }
-
-    private function createTable($group)
-    {
-        $tblName = $group->table_name;
-        $sql = 'CREATE TABLE '.$tblName.' (
-          ID INT NOT NULL,
-';
-        $columns = CharacteristicGroup::findAll(['id_group' => $group->id]);
-        if ($columns[0])
-        {
-            foreach ($columns as $column)
-            {
-                $sqlAdd = StringUtils::translit($column->name);
-
-                //-----------------------
-
-                if ($column->type_value == 0)
-                    $sqlAdd .= ' INT(11) ';
-                elseif ($column->type_value == 1)
-                    $sqlAdd .= ' VARCHAR(255) ';
-                else
-                    $sqlAdd .= ' VARCHAR(255) ';
-
-                //-----------------------
-
-                if ($column->is_required == 0)
-                    $sqlAdd .= ' NOT NULL ';
-                elseif ($column->is_required == 1)
-                    $sqlAdd .= ' NULL ';
-                else
-                    $sqlAdd .= ' NOT NULL ';
-
-                //-----------------------
-                $sqlAdd .= ',';
-                $sql .= $sqlAdd;
-            }
-            $sql .= 'FOREIGN KEY (id) REFERENCES base_material(id),';
-            $sql .= 'PRIMARY KEY(id)';
-            $sql .= ')';
-            $connection = Yii::$app->getDb();
-            $command = $connection->createCommand($sql);
-            $result = $command->query();
-            var_dump($result);
-        }
     }
 }
