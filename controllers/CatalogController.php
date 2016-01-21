@@ -237,6 +237,7 @@ class CatalogController extends \yii\web\Controller
         return json_encode($result);
     }
 
+
     private function createTable($group)
     {
         $tblName = $group->table_name;
