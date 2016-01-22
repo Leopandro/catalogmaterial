@@ -50,6 +50,27 @@ $script = <<< JS
             $(location).attr('href', url);
         }
     });
+
+
+
+    //$(function(){
+    //    $(document).click(function(){
+    //        $('.group-color').each(function(){
+    //            $(this).append("<a href="+"index.php?r=basematerial%2Findex&id="+$(this).attr('id')+">  Link</a>");
+    //        });
+    //    })
+    //});
+    $(".group-color").dblclick(function() {
+    alert("Handler for .dblclick() called.");
+    });
+    //$(function(){
+    //    $(document).on('dblclick', '.group-color', function(event){
+    //        console.log('dblclick on g-c');
+    //    });
+    //            //$('.group-color').each(function(){
+    //            //    $(this).append("<a href="+"index.php?r=basematerial%2Findex&id="+$(this).attr('id')+">  Link</a>");
+    //            //});
+    //});
     $('#tree').treeview({data: $leaves});
     setCookie('group-name', '');
 JS;

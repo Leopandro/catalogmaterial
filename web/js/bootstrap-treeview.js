@@ -520,7 +520,7 @@
                 .addClass(node.state.disabled ? 'node-disabled': '')
                 .addClass(node.state.selected ? 'node-selected' : '')
                 .addClass(node.searchResult ? 'search-result' : '')
-                .addClass(node.node_type ? 'test-class' : '')
+                .addClass(node.node_type ? 'group-color' : '')
                 .attr('id',node.id)
                 .attr('data-nodeid', node.nodeId)
                 .attr('node_type', node.node_type)
