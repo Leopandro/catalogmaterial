@@ -52,6 +52,12 @@ $script = <<< JS
     });
     $('#tree').treeview({data: $leaves});
     setCookie('group-name', '');
+
+
+    $('#tree').on('dblclick','.test-class',function(event){
+        console.log('dblclick catalog group');
+    });
+
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>

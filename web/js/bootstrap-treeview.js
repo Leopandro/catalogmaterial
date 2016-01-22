@@ -72,7 +72,7 @@
         onNodeUnchecked: undefined,
         onNodeUnselected: undefined,
         onSearchComplete: undefined,
-        onSearchCleared: undefined
+        onSearchCleared: undefined,
     };
 
     _default.options = {
@@ -249,6 +249,7 @@
         if (typeof (this.options.onSearchCleared) === 'function') {
             this.$element.on('searchCleared', this.options.onSearchCleared);
         }
+
     };
 
     /*
@@ -319,33 +320,40 @@
 
     Tree.prototype.clickHandler = function (event) {
 
-        if (!this.options.enableLinks) event.preventDefault();
+        var $this = this;
+        setTimeout(function(){
 
-        var target = $(event.target);
-        var node = this.findNode(target);
-        if (!node || node.state.disabled) return;
+            if (!$this.options.enableLinks) event.preventDefault();
 
-        var classList = target.attr('class') ? target.attr('class').split(' ') : [];
-        if ((classList.indexOf('expand-icon') !== -1)) {
+            var target = $(event.target);
+            var node = $this.findNode(target);
+            if (!node || node.state.disabled) return;
 
-            this.toggleExpandedState(node, _default.options);
-            this.render();
-        }
-        else if ((classList.indexOf('check-icon') !== -1)) {
+            var classList = target.attr('class') ? target.attr('class').split(' ') : [];
+            if ((classList.indexOf('expand-icon') !== -1)) {
 
-            this.toggleCheckedState(node, _default.options);
-            this.render();
-        }
-        else {
+                $this.toggleExpandedState(node, _default.options);
+                $this.render();
+            }
+            else if ((classList.indexOf('check-icon') !== -1)) {
 
-            if (node.selectable) {
-                this.toggleSelectedState(node, _default.options);
-            } else {
-                this.toggleExpandedState(node, _default.options);
+                $this.toggleCheckedState(node, _default.options);
+                $this.render();
+            }
+            else {
+
+                if (node.selectable) {
+                    $this.toggleSelectedState(node, _default.options);
+                } else {
+                    $this.toggleExpandedState(node, _default.options);
+                }
+
+                $this.render();
             }
 
-            this.render();
-        }
+        },200);
+
+
     };
 
     // Looks up the DOM for the closest parent list item to retrieve the
