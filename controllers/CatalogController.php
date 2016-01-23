@@ -141,7 +141,7 @@ class CatalogController extends \yii\web\Controller
             {
                 $newGroup = new CharacteristicGroup();
                 $newGroup->name = $item->name;
-                $newGroup->label = StringUtils::translit($item->name);
+                $newGroup->label = Yii::$app->security->generateRandomString(11);
                 $newGroup->type_value = $item->type_value;
                 $newGroup->is_required = $item->is_required;
                 $newGroup->id_group = $group->id;

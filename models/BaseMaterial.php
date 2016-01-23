@@ -87,12 +87,41 @@ class BaseMaterial extends \yii\db\ActiveRecord
         $columns = CharacteristicGroup::findAll(['id_group' => $group->id]);
         $sql = Yii::$app->db->createCommand();
 
-        //Проверка изменений
+        //Проверка есть ли в таблице столбец с заданным label-ом
+        //если нет - добавляем
         foreach ($columns as $column)
         {
             if (!Yii::$app->db->schema->getTableSchema($group->table_name)->columns[$column->label])
             {
-                $sql->addColumn($group->table_name, $column->label, Schema::TYPE_STRING. '(255) NOT NULL')->execute();
+//                if ($column->type_value == 0)
+//                    $valueType = Schema::TYPE_INTEGER.'(11) NOT NULL';
+//                elseif ($column->type_value == 1)
+//                    $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
+//                elseif ($column->type_value == 2)
+//                    $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+//                else
+                    $valueType = Schema::TYPE_STRING.' NOT NULL';
+                $sql->addColumn($group->table_name, $column->label, $valueType)->execute();
+            }
+        }
+        $columnsInTable = Yii::$app->db->schema->getTableSchema($group->table_name)->getColumnNames();
+
+        //Проверка, есть ли такой столбец в списке характеристик
+        //Если нет - удаляем
+        foreach($columnsInTable as $columnInTable)
+        {
+            if ($columnInTable != 'id')
+            {
+                $haveColumn = false;
+                foreach ($columns as $column)
+                {
+                    if ($columnInTable == $column->label)
+                        $haveColumn = true;
+                }
+                if ($haveColumn == false)
+                {
+                    $sql->dropColumn($group->table_name, $columnInTable)->execute();
+                }
             }
         }
     }
@@ -100,9 +129,6 @@ class BaseMaterial extends \yii\db\ActiveRecord
     public static function createTable($group)
     {
         $columns = CharacteristicGroup::findAll(['id_group' => $group->id]);
-
-
-
         // Создаем таблицу
         $sql = Yii::$app->db->createCommand();
         $sql->createTable($group->table_name, [
@@ -112,8 +138,16 @@ class BaseMaterial extends \yii\db\ActiveRecord
         //Добавляем колонки
         foreach ($columns as $column)
         {
-            $columnName = StringUtils::translit($column->name);
-            $sql->addColumn($group->table_name, $columnName, Schema::TYPE_STRING.' NOT NULL')->execute();
+            $columnName = Yii::$app->security->generateRandomString(11);
+//            if ($column->type_value == 0)
+//                $valueType = Schema::TYPE_INTEGER.' NOT NULL';
+//            elseif ($column->type_value == 1)
+//                $valueType = Schema::TYPE_STRING.' NOT NULL';
+//            elseif ($column->type_value == 2)
+//                $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+//            else
+                $valueType = Schema::TYPE_STRING.' NOT NULL';
+            $sql->addColumn($group->table_name, $columnName, $valueType)->execute();
         }
 
         //и связываем id c id base_material
