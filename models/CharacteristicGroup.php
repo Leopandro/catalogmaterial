@@ -19,6 +19,9 @@ use app\models\StringUtils;
  */
 class CharacteristicGroup extends \yii\db\ActiveRecord
 {
+    const type_integer = 0;
+    const type_string = 1;
+    const type_decimal = 2;
     /**
      * @inheritdoc
      */
@@ -57,9 +60,31 @@ class CharacteristicGroup extends \yii\db\ActiveRecord
     public static function getDataForDropDownList()
     {
         return [
-            '0' => 'Число',
-            '1' => 'Текст',
-            '2' => 'Дробное число'
+            self::type_integer => 'Число', //0
+            self::type_string => 'Текст', //1
+            self::type_decimal => 'Дробное число' //2
+        ];
+    }
+    public static function getDataForDropDownListString()
+    {
+        return [
+            self::type_string => 'Текст'
+        ];
+    }
+    public static function getDataForDropDownListInteger()
+    {
+        return [
+            self::type_integer => 'Число',
+            self::type_string => 'Текст',
+            self::type_decimal => 'Дробное число'
+        ];
+    }
+    public static function getDataForDropDownListDecimal()
+    {
+        return [
+            self::type_integer => 'Число',
+            self::type_string => 'Текст',
+            self::type_decimal => 'Дробное число'
         ];
     }
     public static function getLabelForRequired()

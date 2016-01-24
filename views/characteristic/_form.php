@@ -24,7 +24,14 @@ use app\models\CharacteristicGroup;
         </div>
 
         <div class="col-xs-2">
-            <?= $form->field($model, 'type_value')->dropDownList(CharacteristicGroup::getDataForDropDownList()); ?>
+            <?
+            if ($model->type_value == $model::type_integer)
+                echo $form->field($model, 'type_value')->dropDownList(CharacteristicGroup::getDataForDropDownListInteger());
+            if ($model->type_value == $model::type_string)
+                echo $form->field($model, 'type_value')->dropDownList(CharacteristicGroup::getDataForDropDownListString());
+            if ($model->type_value == $model::type_decimal)
+                echo $form->field($model, 'type_value')->dropDownList(CharacteristicGroup::getDataForDropDownListDecimal());
+            ?>
         </div>
 
         <div class="col-xs-2">

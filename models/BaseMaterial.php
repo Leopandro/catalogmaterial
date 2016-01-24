@@ -91,17 +91,43 @@ class BaseMaterial extends \yii\db\ActiveRecord
         //если нет - добавляем
         foreach ($columns as $column)
         {
-            if (!Yii::$app->db->schema->getTableSchema($group->table_name)->columns[$column->label])
+            if (!$thiscolumn = Yii::$app->db->schema->getTableSchema($group->table_name)->columns[$column->label])
             {
-//                if ($column->type_value == 0)
-//                    $valueType = Schema::TYPE_INTEGER.'(11) NOT NULL';
-//                elseif ($column->type_value == 1)
-//                    $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
-//                elseif ($column->type_value == 2)
-//                    $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
-//                else
-                    $valueType = Schema::TYPE_STRING.' NOT NULL';
+                if ($column->type_value == 0)
+                    $valueType = Schema::TYPE_INTEGER.'(11) NOT NULL';
+                elseif ($column->type_value == 1)
+                    $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
+                elseif ($column->type_value == 2)
+                    $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+                else
+                    $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
                 $sql->addColumn($group->table_name, $column->label, $valueType)->execute();
+            }
+            else
+            {
+                $type = $thiscolumn->type; // decimal string integer
+                $columntype = $column->type_value; // 0 = integer 1 = string 2 = decimal
+                if ($columntype == 0)
+                {
+                    $columntype = 'integer';
+                    $sqlType = Schema::TYPE_INTEGER.'(11) NOT NULL';
+                }
+                if ($columntype == 1)
+                {
+                    $columntype = 'string';
+                    $sqlType = Schema::TYPE_STRING.'(255) NOT NULL';
+                }
+                if ($columntype == 2)
+                {
+                    $columntype = 'decimal';
+                    $sqlType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+                }
+                if ($type != $columntype)
+                {
+                    //поменять на $columntype
+                    $sql->alterColumn($group->table_name, $column->label, $sqlType)->execute();
+                    $x = 1;
+                }
             }
         }
         $columnsInTable = Yii::$app->db->schema->getTableSchema($group->table_name)->getColumnNames();
@@ -124,6 +150,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 }
             }
         }
+        //Проверка соответствия типов
     }
 
     public static function createTable($group)
@@ -139,14 +166,14 @@ class BaseMaterial extends \yii\db\ActiveRecord
         foreach ($columns as $column)
         {
             $columnName = Yii::$app->security->generateRandomString(11);
-//            if ($column->type_value == 0)
-//                $valueType = Schema::TYPE_INTEGER.' NOT NULL';
-//            elseif ($column->type_value == 1)
-//                $valueType = Schema::TYPE_STRING.' NOT NULL';
-//            elseif ($column->type_value == 2)
-//                $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
-//            else
-                $valueType = Schema::TYPE_STRING.' NOT NULL';
+            if ($column->type_value == 0)
+                $valueType = Schema::TYPE_INTEGER.'(11) NOT NULL';
+            elseif ($column->type_value == 1)
+                $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
+            elseif ($column->type_value == 2)
+                $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+            else
+                $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
             $sql->addColumn($group->table_name, $columnName, $valueType)->execute();
         }
 
