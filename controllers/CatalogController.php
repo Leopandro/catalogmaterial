@@ -7,7 +7,6 @@ use app\models\CharacteristicGroup;
 use app\models\CharacteristicGroupTemp;
 use app\models\GroupSectionForm;
 use app\models\SectionForm;
-use app\models\StringUtils;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use Yii;
@@ -197,6 +196,7 @@ class CatalogController extends \yii\web\Controller
 
     //---------------------------------------------------------------------------------------
 
+    //---------------------------------------------------------------------------------------
     // сверка дат
     public function actionReviseDates() {
 

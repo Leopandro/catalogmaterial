@@ -67,6 +67,35 @@ class BasematerialController extends Controller
         ]);
     }
 
+    // вывод в excel
+    public function actionExcel()
+    {
+//        $xls = new \PHPExcel();
+//        $xls->setActiveSheetIndex(0);
+//        // Получаем активный лист
+//        $sheet = $xls->getActiveSheet();
+        // Подписываем лист
+
+        /* Находим группу по id */
+        $group_id = $_GET['id'];
+        //----------------------------------------------
+
+        $group = Catalog::findOne(['id' => $group_id]);
+
+        //получаем таблицу значений полей таблицы характеристик
+        $model = $this->getModels($group);
+
+        //----------------------------------------------
+        return $this->render(
+            '_exceltest',
+            [
+                'model' => $model,
+            ]
+        );
+    }
+
+    // Получаем характеристики по ajax
+
     public function actionModel()
     {
         if (Yii::$app->request->isAjax)
@@ -123,15 +152,9 @@ class BasematerialController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+        return $this->render('update', [
+            'id' => $id
+        ]);
     }
 
     /**
@@ -163,6 +186,7 @@ class BasematerialController extends Controller
         }
     }
 
+    /* Получаем id записей из таблицы(сгенерированной)*/
     protected function getIds($table_name)
     {
         $rows = (new Query())
@@ -176,6 +200,7 @@ class BasematerialController extends Controller
         return $ids;
     }
 
+    /* Получаем имена и лейблы из таблицы характеристик групп по id группы*/
     protected function getLabels($group)
     {
         $labels = (new Query())
@@ -186,7 +211,8 @@ class BasematerialController extends Controller
         return $labels;
     }
 
-    protected function getRows($columns, $group, $id)
+    /* Получаем строку из сгенерированной таблицы по id*/
+    protected function getRow($columns, $group, $id)
     {
         $rows = (new Query())
             ->select($columns)
@@ -196,6 +222,17 @@ class BasematerialController extends Controller
         return $rows;
     }
 
+    /* Получаем все строки из сгенерированной таблицы*/
+    protected function getRows($group)
+    {
+        $rows = (new Query())
+            ->select("*")
+            ->from($group->table_name)
+            ->all();
+        return $rows;
+    }
+
+    /* Получить характеристики экземпляра base_material*/
     protected function getModel($group, $id)
     {
         $labels = $this->getLabels($group);
@@ -203,21 +240,40 @@ class BasematerialController extends Controller
         foreach ($labels as $label) {
             $columns[] = $label['label'];
         }
-        $rows = $this->getRows($columns, $group, $id);
+        $rows = $this->getRow($columns, $group, $id);
         $obj = [];
-        $columns = [];
-//        $columns[0]['attribute'] = 'id';
-//        $columns[0]['label'] = 'id';
-//        $obj['id'] = 'id';
         $i = 1;
         foreach ($labels as $label) {
-            $columns[$i]['label'] = $label['name'];
-            $columns[$i]['attribute'] = $label['label'];
             $obj[$label['label']] = $rows[$label['label']];
             $i++;
         }
         return ($model = (Object)$obj);
     }
+
+    protected function getModels($group)
+    {
+        $arr = [];
+        $i = 0;
+        $labels = $this->getLabels($group);
+        $rows = $this->getRows($group);
+        foreach ($labels as $label)
+        {
+            $arr[$i][] = $label['name'];
+            $i++;
+        }
+
+        foreach ($rows as $row)
+        {
+            $row = array_values($row);
+            for ($i = 0; $i < count($arr);$i++)
+            {
+                $arr[$i][] = $row[$i+1];
+            }
+        }
+        return $arr;
+    }
+
+    /* Получаем колонки с именами и лейблами */
     protected function getColumns($group)
     {
         $labels = $this->getLabels($group);
@@ -227,9 +283,6 @@ class BasematerialController extends Controller
         }
 
         $columns = [];
-//        $columns[0]['attribute'] = 'id';
-//        $columns[0]['label'] = 'id';
-//        $obj['id'] = 'id';
         $i = 1;
         foreach ($labels as $label) {
             $columns[$i]['label'] = $label['name'];

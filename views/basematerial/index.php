@@ -10,21 +10,23 @@ use yii\helpers\Url;
 $this->title = 'Материалы группы ';
 $this->params['breadcrumbs'][] = $this->title;
 $url = Url::to(['/basematerial/model', 'id' => $_GET['id']]);
+$urlUpdate = Url::to(['/basematerial/update']);
 $script = <<< JS
-$('button[id]').click(function(){
+var id;
+$('.listitem').click(function(){
+    id = $(this).attr('id');
     var x = $.ajax({
         'url' : '{$url}'+'&material_id='+$(this).attr('id')
     }).done(function()
     {
         $("#detailview").empty();
         $("#detailview").append(x.responseText)
+        $("#material").removeClass("hidden");
     });
-    x.onreadystatechange = function()
-    {
-        console.log(x.responseText);
-        $("#detailview").empty();
-        $("#detailview").append(x.responseText)
-    }
+})
+$("#material").click(function(){
+    var url = '{$urlUpdate}'+'&id='+id;
+    $(location).attr('href', url);
 })
 JS;
 
@@ -48,15 +50,12 @@ $this->registerJs($script, yii\web\View::POS_READY);
         <?= ListView::widget([
             'dataProvider' => $dataProvider,
             'itemView' => function ($model) {
-                return Html::tag('button', $model->name, ['type' => 'button', 'class' => 'btn btn-sm btn-default', 'id' => $model->id, 'style'=>'width:100%;text-align: left']);
+                return Html::tag('button', $model->name, ['type' => 'button', 'class' => 'btn btn-sm btn-default listitem', 'id' => $model->id, 'style'=>'width:100%;text-align: left']);
             }
         ]); ?>
     </div>
-    <div class="col-xs-6" id="detailview">
-<!--        --><?//= DetailView::widget([
-//            'model' => $model,
-//            'attributes' => $columns
-//        ]);
-//        ?>
+    <div class="col-xs-6">
+        <div id="detailview"></div>
+        <button class="btn btn-success hidden" id="material">Редактировать</button>
     </div>
 </div>
