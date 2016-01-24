@@ -1,21 +1,19 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\widgets\ListView;
-use yii\widgets\DetailView;
-use yii\widgets\Pjax;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\BaseMaterialSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Материалы группы ';
 $this->params['breadcrumbs'][] = $this->title;
-
+$url = Url::to(['/basematerial/model', 'id' => $_GET['id']]);
 $script = <<< JS
 $('button[id]').click(function(){
     var x = $.ajax({
-        'url' : 'http://catalogmaterial/web/index.php?r=basematerial%2Fmodel&id='+{$_GET['id']}+'&material_id='+$(this).attr('id')
+        'url' : '{$url}'+'&material_id='+$(this).attr('id')
     }).done(function()
     {
         $("#detailview").empty();
