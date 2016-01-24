@@ -9,7 +9,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\BaseMaterialSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Base Material2s';
+$this->title = 'Материалы группы ';
 $this->params['breadcrumbs'][] = $this->title;
 
 $script = <<< JS
@@ -36,20 +36,21 @@ $this->registerJs($script, yii\web\View::POS_READY);
 
     <h3><?
         echo Html::encode($this->title);
-        if ($_GET['id']) echo ', id каталога = '.$_GET['id']
+        if ($_GET['groupname'])
+            echo ($_GET['groupname']);
         ?>
     </h3>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Base Material2', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Назад в каталог', ['/catalog/index'], ['class' => 'btn btn-primary']) ?>
     </p>
-    <div class="col-xs-6">
+    <div class="col-xs-3">
         <?= ListView::widget([
             'dataProvider' => $dataProvider,
             'itemView' => function ($model) {
-                return Html::tag('button', $model->name, ['type' => 'button', 'class' => 'btn btn-sm btn-default', 'id' => $model->id]);
+                return Html::tag('button', $model->name, ['type' => 'button', 'class' => 'btn btn-sm btn-default', 'id' => $model->id, 'style'=>'width:100%;text-align: left']);
             }
         ]); ?>
     </div>

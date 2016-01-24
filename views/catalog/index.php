@@ -57,7 +57,8 @@ $script = <<< JS
 
     $('#tree').on('dblclick','.group-color',function(event){
         var id = $(this).attr('id');
-        var url = 'index.php?r=basematerial%2Findex&id='+id;
+        var groupname = $(this).text();
+        var url = 'index.php?r=basematerial%2Findex&id='+id+'&groupname='+groupname;
         $(location).attr('href', url);
     });
 
