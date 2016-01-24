@@ -38,18 +38,6 @@ class CatalogController extends \yii\web\Controller
         $leaves = Catalog::ShowTreeFix();
         $leaves = json_encode($leaves);
 
-        /*
-         * init root
-         */
-
-        //$leaves = $this->sortTree($leaves);
-
-        if (!$leaves)
-        {
-            $root = new Catalog(['name' => 'Разделы']);
-            $root->makeRoot();
-            $leaves = Catalog::find()->all();
-        }
         return $this->render('index', [
             'leaves' => $leaves,
             'section' => $section

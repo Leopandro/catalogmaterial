@@ -98,6 +98,8 @@ class Catalog extends ActiveRecord
 
     public static function ShowChildsFix($root)
     {
+        if (!is_object($root))
+            return $arr = [];
         $childs = $root->children(1)->all();
         $arr = [];
         $childs = self::sortTree($childs);

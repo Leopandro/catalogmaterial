@@ -16,8 +16,17 @@ $script = <<< JS
 $('button[id]').click(function(){
     var x = $.ajax({
         'url' : 'http://catalogmaterial/web/index.php?r=basematerial%2Fmodel&id='+{$_GET['id']}+'&material_id='+$(this).attr('id')
+    }).done(function()
+    {
+        $("#detailview").empty();
+        $("#detailview").append(x.responseText)
     });
-    console.log(x);
+    x.onreadystatechange = function()
+    {
+        console.log(x.responseText);
+        $("#detailview").empty();
+        $("#detailview").append(x.responseText)
+    }
 })
 JS;
 
@@ -44,14 +53,11 @@ $this->registerJs($script, yii\web\View::POS_READY);
             }
         ]); ?>
     </div>
-    <div class="col-xs-6">
-        <?php Pjax::begin(); ?>
-        <?= Html::a("Refresh", ['basematerial/index'], ['class' => 'btn btn-lg btn-primary']) ?>
-        <?= DetailView::widget([
-            'model' => $model,
-            'attributes' => $columns
-        ]);
-        ?>
-        <?php Pjax::end(); ?>
+    <div class="col-xs-6" id="detailview">
+<!--        --><?//= DetailView::widget([
+//            'model' => $model,
+//            'attributes' => $columns
+//        ]);
+//        ?>
     </div>
 </div>
