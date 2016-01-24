@@ -8,7 +8,6 @@ use app\models\CharacteristicGroup;
 use Yii;
 use app\models\BaseMaterial2;
 use app\models\BaseMaterialSearch;
-use yii\base\Object;
 use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -73,12 +72,17 @@ class BasematerialController extends Controller
         if (Yii::$app->request->isAjax)
         {
             $group_id = $_GET['id'];
-            $group_id = 89;
             $material_id = $_GET['material_id'];
-            $material_id = 1;
             $group = Catalog::findOne(['id' => $group_id]);
+            $columns = $this->getColumns($group);
             $model = $this->getModel($group, $material_id);
-            return json_encode(['model' => $model]);
+            return $this->renderAjax(
+                '_detailview',
+                [
+                    'model' => $model,
+                    'columns' => $columns
+                ]
+            );
         }
     }
     /**
@@ -221,5 +225,17 @@ class BasematerialController extends Controller
         foreach ($labels as $label) {
             $columns[] = $label['label'];
         }
+
+        $columns = [];
+//        $columns[0]['attribute'] = 'id';
+//        $columns[0]['label'] = 'id';
+//        $obj['id'] = 'id';
+        $i = 1;
+        foreach ($labels as $label) {
+            $columns[$i]['label'] = $label['name'];
+            $columns[$i]['attribute'] = $label['label'];
+            $i++;
+        }
+        return $columns;
     }
 }
