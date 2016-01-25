@@ -79,13 +79,21 @@ class BasematerialController extends Controller
         //получаем таблицу значений полей таблицы характеристик
         $model = BaseMaterial::getModels($group);
 
+        $xls = new \PHPExcel();
+        $xls->setActiveSheetIndex(0);
+        $xls->getActiveSheet()->fromArray($model, null, 'A1');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="your_name.xls"');
+        header('Cache-Control: max-age=0');
+        $writer = \PHPExcel_IOFactory::createWriter($xls, 'Excel5');
+        $writer->save('php://output');
         //----------------------------------------------
-        return $this->render(
-            '_exceltest',
-            [
-                'model' => $model,
-            ]
-        );
+//        return $this->render(
+//            '_exceltest',
+//            [
+//                'xls' => $xls,
+//            ]
+//        );
     }
 
     // Получаем характеристики по ajax
