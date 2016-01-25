@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\mysql\Schema;
+use yii\db\Query;
 /**
  * This is the model class for table "base_material".
  *
@@ -51,10 +52,21 @@ class BaseMaterial extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function getAttributesArray()
+    {
+        return [
+            ['Наименование'],
+            ['Дата верификации'],
+            ['Источник'],
+            ['Шифр'],
+            ['Примечание'],
+        ];
+    }
+
     public function search() {
 
 
-        $query = BaseMaterial::find();
+        $query = self::find();
 
         if($this->date_verify) {
             $query->where( [
@@ -180,5 +192,156 @@ class BaseMaterial extends \yii\db\ActiveRecord
         //и связываем id c id base_material
         $sql->addForeignKey(Yii::$app->security->generateRandomString(), $group->table_name, 'id', 'base_material', 'id', 'NO ACTION', 'NO ACTION')
             ->execute();
+    }
+
+    /* Получаем id записей из таблицы(сгенерированной)*/
+    public static function getIds($table_name)
+    {
+        $rows = (new Query())
+            ->select('id')
+            ->from($table_name)
+            ->all();
+        $ids = [];
+        foreach ($rows as $row) {
+            $ids[] = $row['id'];
+        }
+        return $ids;
+    }
+
+    /* Получаем имена и лейблы из таблицы характеристик групп по id группы*/
+    public static function getLabels($group)
+    {
+        $labels = (new Query())
+            ->select('name,label')
+            ->from(CharacteristicGroup::tableName())
+            ->where(['id_group' => $group->id])
+            ->all();
+        return $labels;
+    }
+
+    /* Получаем строку из сгенерированной таблицы по id*/
+    public static function getRow($columns, $group, $id)
+    {
+        $rows = (new Query())
+            ->select($columns)
+            ->from($group->table_name)
+            ->where(['id' => $id])
+            ->one();
+        return $rows;
+    }
+
+    /* Получаем все строки из сгенерированной таблицы*/
+    public static function getRows($group)
+    {
+        $rows = (new Query())
+            ->select("*")
+            ->from($group->table_name)
+            ->all();
+        return $rows;
+    }
+
+    /* Получаем строки из base_material */
+    public static function getMaterials($ids)
+    {
+        $rows = (new Query())
+            ->select("*")
+            ->from(self::tableName())
+            ->where(['id' => $ids])
+            ->all();
+        return $rows;
+    }
+    /* Получить характеристики экземпляра base_material*/
+    public static function getModel($group, $material_id)
+    {
+        $labels = self::getLabels($group);
+        foreach ($labels as $label) {
+            $columns[] = $label['label'];
+        }
+        $basematerial = BaseMaterial::find()->where(['id' => $material_id])->one();
+        foreach ($basematerial as $key => $value)
+        {
+            $obj[$key] = $value;
+        }
+        $rows = self::getRow($columns, $group, $material_id);
+        foreach ($labels as $label) {
+            $obj[$label['label']] = $rows[$label['label']];
+        }
+        return ($model = (Object)$obj);
+    }
+
+    /* Получаем таблицу из таблицы материалов и характеристик для xsl*/
+    public static function getModels($group)
+    {
+        $arr = self::getAttributesArray();
+        $ids = self::getIds($group->table_name);
+        $materials = self::getMaterials($ids);
+        foreach ($materials as $material)
+        {
+            $material = array_values($material);
+            for ($i = 1; $i < count($material); $i++)
+            {
+                $arr[$i-1][] = $material[$i];
+            }
+        }
+        $labels = self::getLabels($group);
+        $rows = self::getRows($group);
+        $i = 1;
+        foreach ($labels as $label)
+        {
+            $arr[$i+5][] = $label['name'];
+            $i++;
+        }
+
+        foreach ($rows as $row)
+        {
+            $row = array_values($row);
+            for ($i = 0; $i < count($row) - 1;$i++)
+            {
+                $j = $i + 6;
+                $arr[$j][] = $row[$i+1];
+            }
+        }
+        return $arr;
+    }
+
+    /* Получаем колонки с именами и лейблами */
+    public static function getColumnsAndLabels($group)
+    {
+        $columns = self::getBaseMaterialLabels();
+        $labelsCharacteritic = self::getLabels($group);
+        $i = 4;
+        foreach ($labelsCharacteritic as $label) {
+            $columns[$i]['label'] = $label['name'];
+            $columns[$i]['attribute'] = $label['label'];
+            $i++;
+        }
+        return $columns;
+    }
+
+    /* Массив атрибутов и лейблов для detailview */
+    public static function getBaseMaterialLabels()
+    {
+        return [
+            [
+                'attribute' => 'name',
+                'label' => 'Наименование'
+            ],
+            [
+                'attribute' => 'date_verify',
+                'label' => 'Дата верификации'
+            ],
+            [
+                'attribute' => 'source',
+                'label' => 'Источник'
+            ],
+            [
+                'attribute' => 'code',
+                'label' => 'Шифр'
+            ],
+            [
+                'attribute' => 'note',
+                'label' => 'Примечание'
+            ],
+        ];
     }
 }

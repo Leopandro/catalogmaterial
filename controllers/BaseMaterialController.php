@@ -42,23 +42,15 @@ class BasematerialController extends Controller
         {
             $group = Catalog::findOne(['id' => $_GET['id']]);
 
-            /* берем все id из сгенерированной таблицы для поиска по base_material */
-            $ids = $this->getIds($group->table_name);
+            // берем все id из сгенерированной таблицы для поиска по base_material */
+            $ids = BaseMaterial::getIds($group->table_name);
 
-            /* Берем имена колонок и колонки из таблицы характеристик*/
-            $columns = $this->getColumns($group);
-
-            $id = 0;
-            /* Модель для гридвью */
-            $model = $this->getModel($group, $id);
-
-            /* поиск по всем id из $table_name */
+            // поиск по всем id из base_material
             $dataProvider = new ActiveDataProvider([
                 'query' => BaseMaterial::find()->where(['id' => $ids])
             ]);
+
             return $this->render('index', [
-                'model' => $model,
-                'columns' => $columns,
                 'dataProvider' => $dataProvider
             ]);
         }
@@ -83,7 +75,7 @@ class BasematerialController extends Controller
         $group = Catalog::findOne(['id' => $group_id]);
 
         //получаем таблицу значений полей таблицы характеристик
-        $model = $this->getModels($group);
+        $model = BaseMaterial::getModels($group);
 
         //----------------------------------------------
         return $this->render(
@@ -103,8 +95,8 @@ class BasematerialController extends Controller
             $group_id = $_GET['id'];
             $material_id = $_GET['material_id'];
             $group = Catalog::findOne(['id' => $group_id]);
-            $columns = $this->getColumns($group);
-            $model = $this->getModel($group, $material_id);
+            $columns = BaseMaterial::getColumnsAndLabels($group);
+            $model = BaseMaterial::getModel($group, $material_id);
             return $this->renderAjax(
                 '_detailview',
                 [
@@ -184,111 +176,5 @@ class BasematerialController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    /* Получаем id записей из таблицы(сгенерированной)*/
-    protected function getIds($table_name)
-    {
-        $rows = (new Query())
-            ->select('id')
-            ->from($table_name)
-            ->all();
-        $ids = [];
-        foreach ($rows as $row) {
-            $ids[] = $row['id'];
-        }
-        return $ids;
-    }
-
-    /* Получаем имена и лейблы из таблицы характеристик групп по id группы*/
-    protected function getLabels($group)
-    {
-        $labels = (new Query())
-            ->select('name,label')
-            ->from(CharacteristicGroup::tableName())
-            ->where(['id_group' => $group->id])
-            ->all();
-        return $labels;
-    }
-
-    /* Получаем строку из сгенерированной таблицы по id*/
-    protected function getRow($columns, $group, $id)
-    {
-        $rows = (new Query())
-            ->select($columns)
-            ->from($group->table_name)
-            ->where(['id' => $id])
-            ->one();
-        return $rows;
-    }
-
-    /* Получаем все строки из сгенерированной таблицы*/
-    protected function getRows($group)
-    {
-        $rows = (new Query())
-            ->select("*")
-            ->from($group->table_name)
-            ->all();
-        return $rows;
-    }
-
-    /* Получить характеристики экземпляра base_material*/
-    protected function getModel($group, $id)
-    {
-        $labels = $this->getLabels($group);
-        $columns[] = 'id';
-        foreach ($labels as $label) {
-            $columns[] = $label['label'];
-        }
-        $rows = $this->getRow($columns, $group, $id);
-        $obj = [];
-        $i = 1;
-        foreach ($labels as $label) {
-            $obj[$label['label']] = $rows[$label['label']];
-            $i++;
-        }
-        return ($model = (Object)$obj);
-    }
-
-    protected function getModels($group)
-    {
-        $arr = [];
-        $i = 0;
-        $labels = $this->getLabels($group);
-        $rows = $this->getRows($group);
-        foreach ($labels as $label)
-        {
-            $arr[$i][] = $label['name'];
-            $i++;
-        }
-
-        foreach ($rows as $row)
-        {
-            $row = array_values($row);
-            for ($i = 0; $i < count($arr);$i++)
-            {
-                $arr[$i][] = $row[$i+1];
-            }
-        }
-        return $arr;
-    }
-
-    /* Получаем колонки с именами и лейблами */
-    protected function getColumns($group)
-    {
-        $labels = $this->getLabels($group);
-        $columns[] = 'id';
-        foreach ($labels as $label) {
-            $columns[] = $label['label'];
-        }
-
-        $columns = [];
-        $i = 1;
-        foreach ($labels as $label) {
-            $columns[$i]['label'] = $label['name'];
-            $columns[$i]['attribute'] = $label['label'];
-            $i++;
-        }
-        return $columns;
     }
 }

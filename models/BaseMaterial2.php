@@ -42,11 +42,11 @@ class BaseMaterial2 extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'date_verify' => 'Date Verify',
-            'source' => 'Source',
-            'code' => 'Code',
-            'note' => 'Note',
+            'name' => 'Название',
+            'date_verify' => 'Дата сверки',
+            'source' => 'Источник',
+            'code' => 'Шифр',
+            'note' => 'Примечание',
         ];
     }
 }

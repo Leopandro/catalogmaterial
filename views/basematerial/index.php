@@ -10,6 +10,7 @@ use yii\helpers\Url;
 $this->title = 'Материалы группы ';
 $this->params['breadcrumbs'][] = $this->title;
 $url = Url::to(['/basematerial/model', 'id' => $_GET['id']]);
+$group_id = $_GET['id'];
 $urlUpdate = Url::to(['/basematerial/update']);
 $script = <<< JS
 var id;
@@ -19,13 +20,14 @@ $('.listitem').click(function(){
         'url' : '{$url}'+'&material_id='+$(this).attr('id')
     }).done(function()
     {
+        console.log(x);
         $("#detailview").empty();
         $("#detailview").append(x.responseText)
         $("#material").removeClass("hidden");
     });
 })
 $("#material").click(function(){
-    var url = '{$urlUpdate}'+'&id='+id;
+    var url = '{$urlUpdate}'+'&id='+id+'&group_id='+'{$group_id}';
     $(location).attr('href', url);
 })
 JS;
