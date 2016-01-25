@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ListView;
 use yii\helpers\Url;
+use app\models\DynamicFormMaterial;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\BaseMaterialSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -13,11 +14,11 @@ $url = Url::to(['/basematerial/model', 'id' => $_GET['id']]);
 $group_id = $_GET['id'];
 $urlUpdate = Url::to(['/basematerial/update']);
 $script = <<< JS
-var id;
+var idMaterial;
 $('.listitem').click(function(){
-    id = $(this).attr('id');
+    idMaterial = $(this).attr('id');
     var x = $.ajax({
-        'url' : '{$url}'+'&material_id='+$(this).attr('id')
+        'url' : '{$url}'+'&material_id='+idMaterial
     }).done(function()
     {
         console.log(x);
@@ -27,7 +28,8 @@ $('.listitem').click(function(){
     });
 })
 $("#material").click(function(){
-    var url = '{$urlUpdate}'+'&id='+id+'&group_id='+'{$group_id}';
+    var url = '{$urlUpdate}'+'&id='+idMaterial+'&group_id='+'{$group_id}';
+    console.log('material click');
     $(location).attr('href', url);
 })
 JS;
@@ -42,9 +44,6 @@ $this->registerJs($script, yii\web\View::POS_READY);
             echo ($_GET['groupname']);
         ?>
     </h3>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <p>
         <?= Html::a('Назад в каталог', ['/catalog/index'], ['class' => 'btn btn-primary']) ?>
     </p>
