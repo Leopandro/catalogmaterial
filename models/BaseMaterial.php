@@ -55,11 +55,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
     public static function getAttributesArray()
     {
         return [
-            ['Наименование'],
-            ['Дата верификации'],
-            ['Источник'],
-            ['Шифр'],
-            ['Примечание'],
+            ['Наименование', 'Дата верификации','Источник','Шифр','Примечание']
         ];
     }
 
@@ -260,7 +256,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
         $basematerial = BaseMaterial::find()->where(['id' => $material_id])->one();
         foreach ($basematerial as $key => $value)
         {
-            $obj[$key] = $value;
+            $obj[0][$key] = $value;
         }
         $rows = self::getRow($columns, $group, $material_id);
         foreach ($labels as $label) {
@@ -275,31 +271,34 @@ class BaseMaterial extends \yii\db\ActiveRecord
         $arr = self::getAttributesArray();
         $ids = self::getIds($group->table_name);
         $materials = self::getMaterials($ids);
+        $j = 0;
         foreach ($materials as $material)
         {
+            $j++;
             $material = array_values($material);
             for ($i = 1; $i < count($material); $i++)
             {
-                $arr[$i-1][] = $material[$i];
+                $arr[$j][$i-1] = $material[$i];
             }
         }
         $labels = self::getLabels($group);
         $rows = self::getRows($group);
-        $i = 1;
+        $i = 5;
         foreach ($labels as $label)
         {
-            $arr[$i+5][] = $label['name'];
+            $arr[0][$i] = $label['name'];
             $i++;
         }
 
+        $j = 1;
         foreach ($rows as $row)
         {
             $row = array_values($row);
-            for ($i = 0; $i < count($row) - 1;$i++)
+            for ($i = 1; $i < count($row);$i++)
             {
-                $j = $i + 6;
-                $arr[$j][] = $row[$i+1];
+                $arr[$j][$i+5] = $row[$i];
             }
+            $j++;
         }
         return $arr;
     }
