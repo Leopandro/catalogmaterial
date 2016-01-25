@@ -256,7 +256,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
         $basematerial = BaseMaterial::find()->where(['id' => $material_id])->one();
         foreach ($basematerial as $key => $value)
         {
-            $obj[0][$key] = $value;
+            $obj[$key] = $value;
         }
         $rows = self::getRow($columns, $group, $material_id);
         foreach ($labels as $label) {
