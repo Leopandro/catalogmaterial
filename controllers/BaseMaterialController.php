@@ -13,6 +13,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
+use app\models\DynamicFormMaterial;
+
 /**
  * BaseMaterialController implements the CRUD actions for BaseMaterial2 model.
  */
@@ -152,6 +154,15 @@ class BasematerialController extends Controller
      */
     public function actionUpdate($id)
     {
+
+//        $modelForm = new DynamicFormMaterial();
+//        if(Yii::$app->request->get('id'))
+//            $modelForm->id = Yii::$app->request->get('id');
+//
+//
+//        $modelForm->loadDataMaterial();
+
+
         return $this->render('update', [
             'id' => $id
         ]);
