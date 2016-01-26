@@ -9,12 +9,13 @@ use app\models\UploadForm;
 use Yii;
 use app\models\BaseMaterial2;
 use app\models\BaseMaterialSearch;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use app\models\DynamicFormMaterial;
-use yii\web\UploadedFile;
+use yii\base\DynamicModel;use yii\web\UploadedFile;
 use PHPExcel;
 
 /**
@@ -165,16 +166,25 @@ class BasematerialController extends Controller
     public function actionUpdate($id)
     {
 
-//        $modelForm = new DynamicFormMaterial();
-//        if(Yii::$app->request->get('id'))
-//            $modelForm->id = Yii::$app->request->get('id');
-//
-//
-//        $modelForm->loadDataMaterial();
+        $modelForm = new DynamicFormMaterial(Yii::$app->request->get('group_id'));
+        if(Yii::$app->request->get('id'))
+            $modelForm->id = Yii::$app->request->get('id');
+        if(Yii::$app->request->get('group_id'))
+            $modelForm->group_id = Yii::$app->request->get('group_id');
 
+        $modelForm->loadDataMaterial();
+
+
+        if($modelForm->load(Yii::$app->request->post()) && DynamicModel::validateData($modelForm->attributes,$modelForm->rules())) {
+
+            BaseMaterial::updateModel($modelForm->group_id,$modelForm->id,$modelForm->attributes);
+            $urlToRedirect = Url::toRoute(["/basematerial/index",'id' => Yii::$app->request->get('group_id')]);
+            $this->redirect($urlToRedirect);
+
+        }
 
         return $this->render('update', [
-            'id' => $id
+            'modelForm' => $modelForm
         ]);
     }
 
