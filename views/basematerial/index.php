@@ -10,8 +10,7 @@ use app\models\DynamicFormMaterial;
 
 $this->title = 'Материалы группы ';
 $this->params['breadcrumbs'][] = $this->title;
-$url = Url::to(['/basematerial/model', 'id' => $_GET['id']]);
-$group_id = $_GET['id'];
+$url = Url::to(['/basematerial/model', 'id' => $group_id]);
 $urlUpdate = Url::to(['/basematerial/update']);
 $script = <<< JS
 var idMaterial;
@@ -40,8 +39,8 @@ $this->registerJs($script, yii\web\View::POS_READY);
 
     <h3><?
         echo Html::encode($this->title);
-        if ($_GET['groupname'])
-            echo ($_GET['groupname']);
+        if ($group_name)
+            echo $group_name;
         ?>
     </h3>
     <p>

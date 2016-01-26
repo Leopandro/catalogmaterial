@@ -11,8 +11,6 @@ use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use Yii;
 
-
-
 class CatalogController extends \yii\web\Controller
 {
     public function behaviors()
@@ -33,13 +31,12 @@ class CatalogController extends \yii\web\Controller
     public function actionIndex()
     {
         $section = new SectionForm();
-
         $leaves = Catalog::ShowTreeFix();
         $leaves = json_encode($leaves);
 
         return $this->render('index', [
             'leaves' => $leaves,
-            'section' => $section
+            'section' => $section,
         ]);
     }
     /*
