@@ -51,7 +51,7 @@ class SiteController extends Controller
 		    if (!\Yii::$app->user->identity->getIsAdmin())
 			    return $this->redirect(['catalog/index']);
 	    }
-	    return $this->redirect(['orders/index']);
+	    return $this->redirect(['catalog/index']);
         //return $this->render('index');
     }
 
