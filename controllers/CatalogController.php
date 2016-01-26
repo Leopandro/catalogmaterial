@@ -115,7 +115,7 @@ class CatalogController extends \yii\web\Controller
         {
             $root = Catalog::findOne(['id' => $id]);
             $group = new Catalog(['name' => $model->name, 'table_name' => $model->table_name, 'node_type' => 1]);
-            $group->table_name = Yii::$app->security->generateRandomString();
+            $group->table_name = preg_replace('/[^a-zA-Z]/', "", Yii::$app->security->generateRandomString());
             $group->appendTo($root);
 
             // Копируем характеристики
@@ -125,7 +125,7 @@ class CatalogController extends \yii\web\Controller
             {
                 $newGroup = new CharacteristicGroup();
                 $newGroup->name = $item->name;
-                $newGroup->label = Yii::$app->security->generateRandomString(11);
+                $newGroup->label = preg_replace('/[^a-zA-Z]/', "", Yii::$app->security->generateRandomString());
                 $newGroup->type_value = $item->type_value;
                 $newGroup->is_required = $item->is_required;
                 $newGroup->id_group = $group->id;

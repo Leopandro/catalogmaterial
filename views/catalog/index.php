@@ -96,6 +96,7 @@ JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>
 <div class="col-xs-2"><h4>Каталог разделов</h4></div>
+<? echo preg_replace('/[^a-zA-Z]/', "", Yii::$app->security->generateRandomString()) ?>
 <div class="col-xs-10">
     <p>
         <button type="button" class="btn btn-primary" id="section">Создать раздел</button>

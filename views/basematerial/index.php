@@ -25,6 +25,7 @@ $('.listitem').click(function(){
         $("#detailview").append(x.responseText)
         $("#material").removeClass("hidden");
     });
+    console.log(x);
 })
 $("#material").click(function(){
     var url = '{$urlUpdate}'+'&id='+idMaterial+'&group_id='+'{$group_id}';

@@ -173,7 +173,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
         //Добавляем колонки
         foreach ($columns as $column)
         {
-            $columnName = Yii::$app->security->generateRandomString(11);
+            //$columnName = Yii::$app->security->generateRandomString(11);
             if ($column->type_value == 0)
                 $valueType = Schema::TYPE_INTEGER.'(11) NOT NULL';
             elseif ($column->type_value == 1)
@@ -182,7 +182,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
             else
                 $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
-            $sql->addColumn($group->table_name, $columnName, $valueType)->execute();
+            $sql->addColumn($group->table_name, $column->label, $valueType)->execute();
         }
 
         //и связываем id c id base_material
