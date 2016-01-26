@@ -67,7 +67,22 @@ class BasematerialController extends Controller
 
     public function actionImport()
     {
+        $model = new UploadForm();
 
+        if (Yii::$app->request->isPost && $model->file = UploadedFile::getInstance($model, 'file')) {
+            if ($filename = $model->upload()) {
+                // file is uploaded successfully
+                $cells = BaseMaterial::getColumns($filename);
+                $attributes = BaseMaterial::getAttributesArray();
+                return $this->render('import', [
+                    'model' => $model,
+                    'cells' => $cells,
+                    'attributes' => $attributes
+                ]);
+            }
+        }
+
+        return $this->render('import', ['model' => $model]);
     }
 
     // вывод в excel

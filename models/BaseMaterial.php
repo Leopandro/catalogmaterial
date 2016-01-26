@@ -55,7 +55,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
     public static function getAttributesArray()
     {
         return [
-            ['Наименование', 'Дата верификации','Источник','Шифр','Примечание']
+            ['Наименование','Дата верификации','Источник','Шифр','Примечание']
         ];
     }
 
@@ -190,6 +190,29 @@ class BaseMaterial extends \yii\db\ActiveRecord
             ->execute();
     }
 
+    /* Берем столбцы из excel документа */
+    public static function getColumns($filename)
+    {
+        $excel = \PHPExcel_IOFactory::createReader('Excel5');
+
+        $excel = $excel->load($filename);
+        $excel->setActiveSheetIndex(0);
+
+        $i = 0;
+        while(true)
+        {
+            $cellName = chr(ord('A')+$i).'1';
+            $cell = $excel->getActiveSheet()->getCell($cellName);
+            if ($cell == '')
+            {
+                break;
+            }
+            else
+                $cells[] = $cell;
+            $i++;
+        }
+        return $cells;
+    }
     /* Получаем id записей из таблицы(сгенерированной)*/
     public static function getIds($table_name)
     {
