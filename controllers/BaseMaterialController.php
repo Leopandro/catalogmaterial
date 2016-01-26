@@ -163,7 +163,7 @@ class BasematerialController extends Controller
         if($modelForm->load(Yii::$app->request->post()) && DynamicModel::validateData($modelForm->attributes,$modelForm->rules())) {
 
             BaseMaterial::updateModel($modelForm->group_id,$modelForm->id,$modelForm->attributes);
-            $urlToRedirect = Url::toRoute(["/basematerial/index",'id' => Yii::$app->request->get('id')]);
+            $urlToRedirect = Url::toRoute(["/basematerial/index",'id' => Yii::$app->request->get('group_id')]);
             $this->redirect($urlToRedirect);
 
         }
