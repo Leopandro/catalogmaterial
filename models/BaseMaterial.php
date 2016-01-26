@@ -32,7 +32,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date_verify'], 'safe'],
+            [['date_verify','name','source','code','note'], 'safe'],
             [['name', 'source', 'code', 'note'], 'string', 'max' => 45]
         ];
     }
@@ -265,6 +265,34 @@ class BaseMaterial extends \yii\db\ActiveRecord
         return ($model = (Object)$obj);
     }
 
+    public static function updateModel($group_id,$material_id,$attributes) {
+
+        $baseMaterial = BaseMaterial::findOne(['id'=>$material_id]);
+        if(!$baseMaterial)
+            return false;
+
+        if(strtotime($attributes['date_verify']))
+            $attributes['date_verify'] = date("Y-m-d ".date("H:i:s"),strtotime($attributes['date_verify'] ));
+
+        $baseMaterial->setAttributes($attributes);
+        if(!$baseMaterial->save())
+            return false;
+
+        $groupData = Catalog::findOne(['id'=>$group_id]);
+        if(!$groupData)
+            return false;
+
+        $attributesRelatedTable = array_diff_key($attributes,array_merge($baseMaterial->attributes,['group_id'=>$group_id]));
+
+
+        $resultUpdate = BaseMaterial::getDb()->createCommand()
+            ->update($groupData->table_name, $attributesRelatedTable, 'id=:id_material',[':id_material'=>$material_id])
+            ->execute();
+
+        return true;
+    }
+
+
     /* Получаем таблицу из таблицы материалов и характеристик для xsl*/
     public static function getModels($group)
     {
@@ -323,24 +351,109 @@ class BaseMaterial extends \yii\db\ActiveRecord
         return [
             [
                 'attribute' => 'name',
-                'label' => 'Наименование'
+                'label' => 'Наименование',
+                'rules_validate'=>[
+                    ['name','required'],
+                    ['name','string','max'=>128]
+                ],
+                'type_widget'=>'textfield'
             ],
             [
                 'attribute' => 'date_verify',
-                'label' => 'Дата верификации'
+                'label' => 'Дата верификации',
+                'rules_validate'=>[
+                    ['date_verify','string','max'=>128]
+                ],
+                'type_widget'=>'datepicker'
             ],
             [
                 'attribute' => 'source',
-                'label' => 'Источник'
+                'label' => 'Источник',
+                'rules_validate'=>[
+                    ['source','string','max'=>255]
+                ],
+                'type_widget'=>'textfield'
             ],
             [
                 'attribute' => 'code',
-                'label' => 'Шифр'
+                'label' => 'Шифр',
+                'rules_validate'=>[
+                    ['code','string','max'=>50]
+                ],
+                'type_widget'=>'textfield'
             ],
             [
                 'attribute' => 'note',
-                'label' => 'Примечание'
+                'label' => 'Примечание',
+                'rules_validate'=>[
+                    ['note','string','max'=>255]
+                ],
+                'type_widget'=>'textfield'
             ],
         ];
     }
+
+
+    public static function getAttributesByGroupId($idGroup) {
+
+
+        $baseMaterialAttributes = self::getBaseMaterialLabels();
+        $baseMaterialAttributes[] = [
+            'attribute'=>'id',
+            'label'=>'',
+            'rules_validate'=>[],
+            'type_widget'=>'hidden'
+        ];
+
+        $baseMaterialAttributes[] = [
+            'attribute'=>'group_id',
+            'label'=>'',
+            'rules_validate'=>[],
+            'type_widget'=>'hidden'
+        ];
+
+        $characteristicsOfGroup = CharacteristicGroup::findAll(['id_group'=>$idGroup]);
+        if(is_array($characteristicsOfGroup)) {
+
+            foreach($characteristicsOfGroup as $curCharacteristic) {
+
+                $dataAttr = [
+                    'attribute'=>$curCharacteristic->label,
+                    'label'=>$curCharacteristic->name,
+                ];
+
+
+                switch($curCharacteristic->type_value) {
+
+                    case 0:
+                        $dataAttr['rules_validate'] = [
+                            [$curCharacteristic->label,'integer']
+                        ];
+                        break;
+                    case 1:
+                        $dataAttr['rules_validate'] = [
+                            [$curCharacteristic->label,'string','max'=>255]
+                        ];
+                        break;
+                    case 2:
+                        $dataAttr['rules_validate'] = [
+                            [$curCharacteristic->label,'double']
+                        ];
+                        break;
+                }
+
+                if(intval($curCharacteristic->is_required) == 1)
+                    $dataAttr['rules_validate'][] = [$curCharacteristic->label,'required'];
+
+                $dataAttr['type_widget'] = 'textfield';
+
+                $baseMaterialAttributes[] = $dataAttr;
+
+            }
+
+        }
+
+        return $baseMaterialAttributes;
+    }
+
 }

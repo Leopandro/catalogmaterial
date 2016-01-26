@@ -42,7 +42,7 @@ class User extends BaseUser
                 ['label' => 'Пользователи', 'url' => ['/user/admin/index']],
                 ['label' => 'Права доступа', 'url' => ['/access/index']],
                 ['label' => 'Каталог разделов', 'url' => ['/catalog/index']],
-                ['label' => 'Атрибуты', 'url' => ['/attributes/index']],
+//                ['label' => 'Атрибуты', 'url' => ['/attributes/index']],
                 ['label' => 'Сверка дат', 'url' => ['/catalog/revise-dates']],
                 ['label' => 'Импорт', 'url' => ['/user/admin/index1']],
                 ['label' => 'Экспорт', 'url' => ['/user/admin/index1']],
