@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\BaseMaterial2 */
 
 $this->title = 'Редактирование материала';
-$group_id = $_GET['group_id'];
+Yii::$app
 ?>
 <div class="base-material2-update">
 

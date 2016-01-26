@@ -5,15 +5,17 @@ namespace app\controllers;
 use app\models\BaseMaterial;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
+use app\models\UploadForm;
 use Yii;
 use app\models\BaseMaterial2;
 use app\models\BaseMaterialSearch;
-use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use app\models\DynamicFormMaterial;
+use yii\web\UploadedFile;
+use PHPExcel;
 
 /**
  * BaseMaterialController implements the CRUD actions for BaseMaterial2 model.
@@ -40,9 +42,9 @@ class BasematerialController extends Controller
     {
         $searchModel = new BaseMaterialSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        if ($_GET['id'])
+        if ($id = Yii::$app->request->get('id'))
         {
-            $group = Catalog::findOne(['id' => $_GET['id']]);
+            $group = Catalog::findOne(['id' => $id]);
 
             // берем все id из сгенерированной таблицы для поиска по base_material */
             $ids = BaseMaterial::getIds($group->table_name);
@@ -53,6 +55,8 @@ class BasematerialController extends Controller
             ]);
 
             return $this->render('index', [
+                'group_name' => $group->name,
+                'group_id' => $id,
                 'dataProvider' => $dataProvider
             ]);
         }
@@ -61,39 +65,30 @@ class BasematerialController extends Controller
         ]);
     }
 
+    public function actionImport()
+    {
+
+    }
+
     // вывод в excel
     public function actionExcel()
     {
-//        $xls = new \PHPExcel();
-//        $xls->setActiveSheetIndex(0);
-//        // Получаем активный лист
-//        $sheet = $xls->getActiveSheet();
-        // Подписываем лист
-
         /* Находим группу по id */
         $group_id = $_GET['id'];
-        //----------------------------------------------
-
         $group = Catalog::findOne(['id' => $group_id]);
-
-        //получаем таблицу значений полей таблицы характеристик
+        //получаем таблицу значений полей таблицы материала и характеристик
         $model = BaseMaterial::getModels($group);
 
         $xls = new \PHPExcel();
         $xls->setActiveSheetIndex(0);
         $xls->getActiveSheet()->fromArray($model, null, 'A1');
+
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="your_name.xls"');
         header('Cache-Control: max-age=0');
+
         $writer = \PHPExcel_IOFactory::createWriter($xls, 'Excel5');
         $writer->save('php://output');
-        //----------------------------------------------
-//        return $this->render(
-//            '_exceltest',
-//            [
-//                'xls' => $xls,
-//            ]
-//        );
     }
 
     // Получаем характеристики по ajax

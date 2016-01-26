@@ -1,11 +1,19 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 
 $this->title = 'Каталог разделов';
 $this->params['breadcrumbs'][] = $this->title;
-$url = Url::to(['/basematerial/excel']);
+$url = Url::toRoute(['/basematerial/excel']);
+$urlIndex = Url::toRoute(['/basematerial/index']);
+$urlUpload = Url::toRoute(['/basematerial/import']);
+$urlCreate = Url::toRoute(['/catalog/create']);
+$urlEdit = Url::toRoute(['/catalog/edit']);
+$urlGroup = Url::toRoute(['/catalog/group']);
+$urlEditGroup = Url::toRoute(['/catalog/editgroup']);
 $script = <<< JS
     $('#section').click(function(){
         var x = $('.node-selected');
@@ -14,7 +22,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((node_type == 0 || node_type == undefined) && (id))
         {
-            var url = 'index.php?r=catalog%2Fcreate&id='+id;
+            var url = '{$urlCreate}'+'&id='+id;
             $(location).attr('href',url);
         }
     });
@@ -25,7 +33,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((id) && (node_type == 0 || node_type == undefined))
         {
-            var url = 'index.php?r=catalog%2Fedit&id='+id;
+            var url = '{$urlEdit}'+'&id='+id;
             $(location).attr('href',url);
         }
     });
@@ -36,7 +44,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((id) && (node_type == 0 || node_type == undefined))
         {
-            var url = 'index.php?r=catalog%2Fgroup&id='+id;
+            var url = '{$urlGroup}'+'&id='+id;
             $(location).attr('href',url);
         }
     });
@@ -47,7 +55,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((id) && (node_type == 1))
         {
-            var url = 'index.php?r=catalog%2Feditgroup&id='+id;
+            var url = '{$urlEditGroup}'+'&id='+id;
             $(location).attr('href', url);
         }
     });
@@ -58,8 +66,7 @@ $script = <<< JS
 
     $('#tree').on('dblclick','.group-color',function(event){
         var id = $(this).attr('id');
-        var groupname = $(this).text();
-        var url = 'index.php?r=basematerial%2Findex&id='+id+'&groupname='+groupname;
+        var url = '{$urlIndex}'+'&id='+id;
         $(location).attr('href', url);
     });
 
@@ -74,6 +81,16 @@ $script = <<< JS
             $(location).attr('href', url);
         }
     });
+    $("#inputfromxml").click(function(){
+        var node = $(".node-selected");
+        var id = node.attr("id");
+        var node_type = node.attr("node_type");
+        if ((id) && (node_type == 1))
+        {
+            var url = '{$urlUpload}'+'&id='+id;
+            $(location).attr('href', url);
+        }
+    });
 
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
@@ -85,7 +102,8 @@ $this->registerJs($script, yii\web\View::POS_READY);
         <button type="button" class="btn btn-success" id="edit">Редактировать раздел</button>
         <button type="button" class="btn btn-primary" id="group">Создать группу</button>
         <button type="button" class="btn btn-success" id="editgroup">Редактировать группу</button>
-        <button type="button" class="btn btn-info" id="outputtoxml">Вывести в XML</button>
+        <button type="button" class="btn btn-info" id="outputtoxml">Экспорт в Excel</button>
+        <button type="button" class="btn btn-info" id="inputfromxml">Импорт из Excel</button>
     </p>
 </div>
 <div class="col-xs-12" id="tree">
