@@ -110,6 +110,10 @@ $script = <<< JS
             var url = '{$urlUpload}'+'&id='+id;
             $(location).attr('href', url);
         }
+        else
+        {
+            alert('Выберите группу');
+        }
     });
 
 JS;

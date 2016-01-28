@@ -22,7 +22,7 @@ $('form button[type=submit]').click(function(){
         arrColumns[i] = $(this).val();
         i++;
     });
-    if ($.inArray('', arrColumns) == 0)
+    if ($.inArray('', arrColumns) == 1)
     {
         $('.alert-danger').removeClass('hidden');
         $('.alert-danger').text('Выберите колонки, соответствующие характеристикам');

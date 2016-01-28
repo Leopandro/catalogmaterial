@@ -18,7 +18,11 @@ class ImportFromExcel extends \yii\base\Model
 
     public function import()
     {
-        $xlsReader = \PHPExcel_IOFactory::createReader('Excel5');
+        $path_info = pathinfo($this->filename);
+        if ($path_info['extension'] == 'xls')
+            $xlsReader = \PHPExcel_IOFactory::createReader('Excel5');
+        else
+            $xlsReader = \PHPExcel_IOFactory::createReader('Excel2007');
         $xlsObj = $xlsReader->load($this->filename);
         $xlsObj->setActiveSheetIndex(0);
         $sheet = $xlsObj->getActiveSheet();

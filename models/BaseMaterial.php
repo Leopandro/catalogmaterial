@@ -45,7 +45,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Наименование',
-            'date_verify' => 'Дата верификации',
+            'date_verify' => 'Дата сверки',
             'source' => 'Источник',
             'code' => 'Шифр',
             'note' => 'Примечание',
@@ -56,7 +56,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
     public static function getAttributesArray()
     {
         return [
-            ['Наименование','Дата верификации','Источник','Шифр','Примечание']
+            ['Наименование','Дата сверки','Источник','Шифр','Примечание']
         ];
     }
 
