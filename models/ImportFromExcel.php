@@ -7,12 +7,12 @@
  */
 namespace app\models;
 
+use Yii;
 use yii\db\Query;
 
 class ImportFromExcel extends \yii\base\Model
 {
     public $settings;
-    //public $startRow;
     public $filename;
     public $id_group;
 
@@ -22,11 +22,33 @@ class ImportFromExcel extends \yii\base\Model
         $xlsObj = $xlsReader->load($this->filename);
         $xlsObj->setActiveSheetIndex(0);
         $sheet = $xlsObj->getActiveSheet();
-        $ids = self::importBaseSettings($sheet);
-        self::importExtendedSettings($sheet, $this->settings, $this->id_group, $ids);
-        $x = 1;
+        $this->deleteAllRows();
+        $ids = $this->importBaseSettings($sheet);
+        $this->importExtendedSettings($sheet, $this->settings, $this->id_group, $ids);
 
     }
+
+    //Удаляет все строки из таблицы характеристик и материалов
+    public function deleteAllRows()
+    {
+        $catalog = Catalog::findOne(['id' => $this->id_group]);
+
+        //Берем id записей из таблицы характеристик
+        $ids = (new Query())
+            ->select('id')
+            ->from($catalog->table_name)
+            ->all();
+        //Удаляем записи из таблицы характеристик
+        $sql = Yii::$app->db->createCommand()
+            ->delete($catalog->table_name, ['id' => $ids])
+            ->execute();
+        //Удаляем записи из таблицы материалов по id
+        $sql = Yii::$app->db->createCommand()
+            ->delete(BaseMaterial::tableName(), ['id' => $ids])
+            ->execute();
+    }
+
+    //Импорт базовых характеристик, возвращает массив id insert-ов
     public function importBaseSettings($sheet)
     {
         $attributes = (new BaseMaterial())->attributeLabels();
@@ -37,9 +59,8 @@ class ImportFromExcel extends \yii\base\Model
                 $arr[$key] = ' ';
             }
         }
-
         $rowsCount = $sheet->getHighestRow();
-        for ($i = 2; $i < $rowsCount + 1; $i++)
+        for ($i = 1; $i < $rowsCount; $i++)
         {
             foreach ($arr as $key => $value)
             {
@@ -47,12 +68,19 @@ class ImportFromExcel extends \yii\base\Model
             }
             $rows[] = $row;
         }
-        $ids = [];
+        foreach ($rows as $row)
+        {
+            $sql = Yii::$app->db->createCommand()
+                ->insert(BaseMaterial::tableName(), $row)
+                ->execute();
+            $ids[] = Yii::$app->db->lastInsertID;
+        }
         return $ids;
     }
 
-    public static function importExtendedSettings($sheet, $settings, $id, $ids)
+    public function importExtendedSettings($sheet, $settings, $id, $ids)
     {
+        $tableName = Catalog::findOne(['id' => $this->id_group])->table_name;
         $settingRows = (new Query())
             ->select('label')
             ->from(CharacteristicGroup::tableName())
@@ -64,13 +92,22 @@ class ImportFromExcel extends \yii\base\Model
             $arr[$key] = '';
         }
         $rowsCount = $sheet->getHighestRow();
-        for ($i = 2; $i < $rowsCount + 1; $i++)
+        $j = 0;
+        for ($i = 1; $i < $rowsCount; $i++)
         {
             foreach ($arr as $key => $value)
             {
                 $row[$key] = $sheet->getCell($settings[$key]['nameExcelColumn'].$i)->getValue();
             }
+            $row['id'] = $ids[$j];
+            $j++;
             $rows[] = $row;
+        }
+        foreach ($rows as $row)
+        {
+            $sql = Yii::$app->db->createCommand()
+                ->insert($tableName, $row)
+                ->execute();
         }
         $x = 1;
     }
