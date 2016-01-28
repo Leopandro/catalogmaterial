@@ -1,6 +1,8 @@
 <?php
 use yii\widgets\ActiveForm;
 
+$this->title = 'Импорт данных';
+$this->params['breadcrumbs'][] = $this->title;
 $script = <<< JS
 function isDublicate(arr)
 {

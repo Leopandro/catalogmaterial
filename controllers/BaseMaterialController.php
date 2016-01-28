@@ -107,9 +107,9 @@ class BasematerialController extends Controller
         $xls = new \PHPExcel();
         $xls->setActiveSheetIndex(0);
         $xls->getActiveSheet()->fromArray($model, null, 'A1');
-
+        $filename = 'ImportGroup_'.Yii::$app->user->identity->username.'_'.date('d-m-Y H:i:s', time());
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="your_name.xls"');
+        header('Content-Disposition: attachment;filename='.$filename.'.xls');
         header('Cache-Control: max-age=0');
 
         $writer = \PHPExcel_IOFactory::createWriter($xls, 'Excel5');
