@@ -5,6 +5,9 @@ namespace app\controllers;
 use app\models\BaseMaterial;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
+use app\models\ImportFromExcel;
+use app\models\ImportModel;
+use app\models\ImportModelForm;
 use app\models\UploadForm;
 use Yii;
 use app\models\BaseMaterial2;
@@ -68,22 +71,28 @@ class BasematerialController extends Controller
 
     public function actionImport()
     {
-        $model = new UploadForm();
+        $id = Yii::$app->request->get('id');
+        $catalog = Catalog::findOne(['id' => $id]);
+        $importModel = new ImportModel();
+        $importModel->generateSettings($id);
 
-        if (Yii::$app->request->isPost && $model->file = UploadedFile::getInstance($model, 'file')) {
-            if ($filename = $model->upload()) {
-                // file is uploaded successfully
-                $cells = BaseMaterial::getColumns($filename);
-                $attributes = BaseMaterial::getAttributesArray();
-                return $this->render('import', [
-                    'model' => $model,
-                    'cells' => $cells,
-                    'attributes' => $attributes
-                ]);
+        if ($importModel->load(Yii::$app->request->post()))
+        {
+            $importModel->file = UploadedFile::getInstance($importModel, 'file');
+            if ($filename = $importModel->upload())
+            {
+                $import = new ImportFromExcel();
+                $import->settings = $importModel->columnSettings;
+                $import->id_group = $id;
+                //$import->startRow = $importModel->startRow;
+                $import->filename = $filename;
+                $import->import();
             }
         }
-
-        return $this->render('import', ['model' => $model]);
+        return $this->render('import', [
+            'catalog' => $catalog,
+            'importModel' => $importModel,
+        ]);
     }
 
     // вывод в excel

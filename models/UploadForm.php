@@ -20,10 +20,10 @@ class UploadForm extends Model
 
     public function upload()
     {
-            $path = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/';
-            if (!is_dir($path)) mkdir($path);
-            $filename = Yii::$app->security->generateRandomString(9);
-            $this->file->saveAs($path . $filename . '.' . $this->file->extension);
-            return $path . $filename . '.' . $this->file->extension;
-    }
+        $path = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/';
+        if (!is_dir($path)) mkdir($path);
+        $filename = Yii::$app->security->generateRandomString(9);
+        $this->file->saveAs($path . $filename . '.' . $this->file->extension);
+        return $path . $filename . '.' . $this->file->extension;
+}
 }

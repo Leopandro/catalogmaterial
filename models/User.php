@@ -44,8 +44,6 @@ class User extends BaseUser
                 ['label' => 'Каталог разделов', 'url' => ['/catalog/index']],
 //                ['label' => 'Атрибуты', 'url' => ['/attributes/index']],
                 ['label' => 'Сверка дат', 'url' => ['/catalog/revise-dates']],
-                ['label' => 'Импорт', 'url' => ['/user/admin/index1']],
-                ['label' => 'Экспорт', 'url' => ['/user/admin/index1']],
                 ['label' => '', 'url' => ['/user/admin/index1']],
                 [
                     'label' => 'Выйти (' . Yii::$app->user->identity->username . ')',

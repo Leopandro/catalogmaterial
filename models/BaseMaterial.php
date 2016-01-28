@@ -52,6 +52,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
         ];
     }
 
+
     public static function getAttributesArray()
     {
         return [

@@ -25,6 +25,10 @@ $script = <<< JS
             var url = '{$urlCreate}'+'&id='+id;
             $(location).attr('href',url);
         }
+        else
+        {
+            alert('Выберите раздел для добавления подраздела');
+        }
     });
     $('#edit').click(function(){
         var x = $('.node-selected');
@@ -35,6 +39,10 @@ $script = <<< JS
         {
             var url = '{$urlEdit}'+'&id='+id;
             $(location).attr('href',url);
+        }
+        else
+        {
+            alert('Выберите раздел для редактирования');
         }
     });
     $('#group').click(function(){
@@ -47,6 +55,10 @@ $script = <<< JS
             var url = '{$urlGroup}'+'&id='+id;
             $(location).attr('href',url);
         }
+        else
+        {
+            alert('Выберите раздел для добавления группы');
+        }
     });
     $('#editgroup').click(function(){
         var x = $('.node-selected');
@@ -57,6 +69,10 @@ $script = <<< JS
         {
             var url = '{$urlEditGroup}'+'&id='+id;
             $(location).attr('href', url);
+        }
+        else
+        {
+            alert('Выберите группу для редактирования');
         }
     });
 
@@ -79,6 +95,10 @@ $script = <<< JS
         {
             var url = '{$url}'+'&id='+id;
             $(location).attr('href', url);
+        }
+        else
+        {
+            alert('Выберите группу');
         }
     });
     $("#inputfromxml").click(function(){
