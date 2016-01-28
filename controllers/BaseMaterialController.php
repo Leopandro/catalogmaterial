@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AccessUserGroupMaterial;
 use app\models\BaseMaterial;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
@@ -48,21 +49,52 @@ class BasematerialController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         if ($id = Yii::$app->request->get('id'))
         {
-            $group = Catalog::findOne(['id' => $id]);
+            if (Yii::$app->user->identity->role_id == 1)
+            {
+                $group = Catalog::findOne(['id' => $id]);
 
-            // берем все id из сгенерированной таблицы для поиска по base_material */
-            $ids = BaseMaterial::getIds($group->table_name);
+                // берем все id из сгенерированной таблицы для поиска по base_material */
+                $ids = BaseMaterial::getIds($group->table_name);
 
-            // поиск по всем id из base_material
-            $dataProvider = new ActiveDataProvider([
-                'query' => BaseMaterial::find()->where(['id' => $ids])
-            ]);
+                // поиск по всем id из base_material
+                $dataProvider = new ActiveDataProvider([
+                    'query' => BaseMaterial::find()->where(['id' => $ids])
+                ]);
 
-            return $this->render('index', [
-                'group_name' => $group->name,
-                'group_id' => $id,
-                'dataProvider' => $dataProvider
-            ]);
+                return $this->render('index', [
+                    'group_name' => $group->name,
+                    'group_id' => $id,
+                    'dataProvider' => $dataProvider
+                ]);
+            }
+            else
+            {
+                $group = Catalog::findOne(['id' => $id]);
+                if (AccessUserGroupMaterial::findOne(['id_group_material' => $id, 'id_user' => Yii::$app->user->identity->id]))
+                {
+                    $group = Catalog::findOne(['id' => $id]);
+
+                    // берем все id из сгенерированной таблицы для поиска по base_material */
+                    $ids = BaseMaterial::getIds($group->table_name);
+
+                    // поиск по всем id из base_material
+                    $dataProvider = new ActiveDataProvider([
+                        'query' => BaseMaterial::find()->where(['id' => $ids])
+                    ]);
+                    return $this->render('userindex', [
+                        'group_name' => $group->name,
+                        'group_id' => $id,
+                        'dataProvider' => $dataProvider
+                    ]);
+                }
+                else
+                {
+                    $message = 'У вас нет доступа к этому разделу';
+                    return $this->render('userindex', [
+                        'message' => $message
+                    ]);
+                }
+            }
         }
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -175,6 +207,10 @@ class BasematerialController extends Controller
     public function actionUpdate($id)
     {
 
+        if (Yii::$app->user->identity->role_id == 2)
+        {
+            return false;
+        }
         $modelForm = new DynamicFormMaterial(Yii::$app->request->get('group_id'));
         if(Yii::$app->request->get('id'))
             $modelForm->id = Yii::$app->request->get('id');

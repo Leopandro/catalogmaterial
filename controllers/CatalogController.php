@@ -33,11 +33,20 @@ class CatalogController extends \yii\web\Controller
         $section = new SectionForm();
         $leaves = Catalog::ShowTreeFix();
         $leaves = json_encode($leaves);
-
-        return $this->render('index', [
-            'leaves' => $leaves,
-            'section' => $section,
-        ]);
+        if (Yii::$app->user->identity->role_id == 2)
+        {
+            return $this->render('userindex', [
+                'leaves' => $leaves,
+                'section' => $section,
+            ]);
+        }
+        else
+        {
+            return $this->render('index', [
+                'leaves' => $leaves,
+                'section' => $section,
+            ]);
+        }
     }
     /*
      * Создание каталога

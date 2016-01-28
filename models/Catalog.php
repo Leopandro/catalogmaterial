@@ -6,6 +6,7 @@
  * Time: 15:17
  */
 namespace app\models;
+use Yii;
 use yii\base\Object;
 use yii\db\ActiveRecord;
 
@@ -14,7 +15,6 @@ use yii\helpers\ArrayHelper;
 
 class Catalog extends ActiveRecord
 {
-
     const TYPE_GROUP = 1;
     const TYPE_PART = 0;
 
@@ -58,29 +58,29 @@ class Catalog extends ActiveRecord
             return;
 
         foreach ($leaves as $leave) {
-            if (($leave->depth == $depth)) {
-                $dataNode = [];
-                if ($leave->node_type <> 0)
-                {
-                    $dataNode['node_type']=$leave->node_type;
-                    $dataNode['icon']='glyphicon glyphicon-book';
+                if (($leave->depth == $depth)) {
+                    $dataNode = [];
+                    if ($leave->node_type <> 0)
+                    {
+                        $dataNode['node_type']=$leave->node_type;
+                        $dataNode['icon']='glyphicon glyphicon-book';
+                    }
+                    else
+                    {
+                        $dataNode['icon']='glyphicon glyphicon-folder-open';
+                        $dataNode['state']['expanded'] = true;
+                    }
+
+                    if(in_array($leave->id,$idsChecked))
+                        $dataNode['state']['checked'] = true;
+
+                    $dataNode['text']=$leave->name;
+                    $dataNode['id']=$leave->id;
+
+                    $dataNode['nodes'] = self::showChilds($leaves, $leave->id,$idsChecked);
+
+                    $result[] = (object)$dataNode;
                 }
-                else
-                {
-                    $dataNode['icon']='glyphicon glyphicon-folder-open';
-                    $dataNode['state']['expanded'] = true;
-                }
-
-                if(in_array($leave->id,$idsChecked))
-                    $dataNode['state']['checked'] = true;
-
-                $dataNode['text']=$leave->name;
-                $dataNode['id']=$leave->id;
-
-                $dataNode['nodes'] = self::showChilds($leaves, $leave->id,$idsChecked);
-
-                $result[] = (object)$dataNode;
-            }
         }
 
         return $result;
@@ -105,24 +105,44 @@ class Catalog extends ActiveRecord
         $childs = self::sortTree($childs);
         foreach ($childs as $child)
         {
-            $obj = [
-                'text'=>$child->name,
-                'id'=>$child->id,
-                'node_type'=>$child->node_type
-            ];
+            if( Yii::$app->user->identity->role_id == 2) {
+                if (AccessUserGroupMaterial::find()->where(['id_user' => Yii::$app->user->identity->id, 'id_group_material' => $child->id])->one())
+                {
+                    $obj = [
+                        'text' => $child->name,
+                        'id' => $child->id,
+                        'node_type' => $child->node_type
+                    ];
 
-            if ($child->node_type == 0)
-            {
-                $obj['icon'] = 'glyphicon glyphicon-folder-open';
-                $obj['state']['expanded'] = true;
-            }
-            else if ($child->node_type == 1)
-            {
-                $obj['icon'] = 'glyphicon glyphicon-book';
-            }
+                    if ($child->node_type == 0) {
+                        $obj['icon'] = 'glyphicon glyphicon-folder-open';
+                        $obj['state']['expanded'] = true;
+                    } else if ($child->node_type == 1) {
+                        $obj['icon'] = 'glyphicon glyphicon-book';
+                    }
 
-            $obj['nodes'] = self::ShowChildsFix($child);
-            $arr[] = (object)$obj;
+                    $obj['nodes'] = self::ShowChildsFix($child);
+                    $arr[] = (object)$obj;
+                }
+            }
+            else
+            {
+                $obj = [
+                    'text' => $child->name,
+                    'id' => $child->id,
+                    'node_type' => $child->node_type
+                ];
+
+                if ($child->node_type == 0) {
+                    $obj['icon'] = 'glyphicon glyphicon-folder-open';
+                    $obj['state']['expanded'] = true;
+                } else if ($child->node_type == 1) {
+                    $obj['icon'] = 'glyphicon glyphicon-book';
+                }
+
+                $obj['nodes'] = self::ShowChildsFix($child);
+                $arr[] = (object)$obj;
+            }
         }
         return $arr;
     }
