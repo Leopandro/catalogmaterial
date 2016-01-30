@@ -100,3 +100,13 @@ a.desc:after {
 .treeview  .list-group li.node-tree span.glyphicon-folder-open, .treeview  .list-group li.node-treeAccessGroups span.glyphicon-folder-open {
     margin-right: 10px;
 }
+
+.treeview .list-group-item:first-child {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.treeview .list-group-item:last-child {
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
