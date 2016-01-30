@@ -137,7 +137,7 @@ class BasematerialController extends Controller
         if (Yii::$app->user->identity->role_id == 2) {
             BaseMaterial::getExcelReport();
         }
-        $this->renderAjax('index');
+        //$this->renderAjax('index');
     }
 
     public function actionImport()
