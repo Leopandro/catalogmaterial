@@ -9,6 +9,7 @@ $this->title = 'Каталог разделов';
 $this->params['breadcrumbs'][] = $this->title;
 $url = Url::toRoute(['/basematerial/index']);
 $script = <<< JS
+console.log({$leaves});
 $('#tree').treeview({data: $leaves});
     setCookie('group-name', '');
 $('#tree').on('dblclick','.group-color',function(event){
