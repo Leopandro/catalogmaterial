@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use PHPExcel;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\mysql\Schema;
@@ -191,6 +192,57 @@ class BaseMaterial extends \yii\db\ActiveRecord
             ->execute();
     }
 
+    public static function getExcelReport()
+    {
+        $user_id = Yii::$app->user->identity->id;
+        $path = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/';
+        $xslPath = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/'.'report.xls';
+        $xsl = new PHPExcel();
+        $xsl->setActiveSheetIndex(0);
+        $sheet = $xsl->getActiveSheet();
+//        if (!is_dir($path))
+//        {
+//            mkdir($path);
+//            $writer = \PHPExcel_IOFactory::createWriter($xsl, 'Excel5');
+//            file_put_contents($xslPath, $writer);
+//        }
+        $rows = (new Query())
+            ->select(['catalog_id', 'base_material_id'])
+            ->from(ExcelReport::tableName())
+            ->where(['user_id' => $user_id])
+            ->all();
+        foreach ($rows as $row)
+        {
+            $group = Catalog::findOne(['id' => $row['catalog_id']]);
+            $material = BaseMaterial::findOne(['id' => $row['base_material_id']]);
+            $labelsForSearch = self::getLabelsOnly($group);
+            $characteristic = self::getLabels($group);
+            $charQuery= (new Query())
+                ->select($labelsForSearch)
+                ->from($group->table_name)
+                ->where(['id' => $row['base_material_id']])
+                ->one();
+            for ($i = 0; $i < count($characteristic); $i++)
+            {
+                $characteristic[$i]['value'] = $charQuery[$characteristic[$i]['label']];
+            }
+            $highestRow = $sheet->getHighestRow();
+            $sheet->mergeCells('A'.($highestRow).':'.'B'.($highestRow));
+            $sheet->setCellValue('A'.($highestRow), $group->name.'. '.$material->name);
+            for ($i = 0; $i < count($characteristic); $i++)
+            {
+                $sheet->setCellValue('A'.($highestRow+$i+1), $characteristic[$i]['name']);
+                $sheet->setCellValue('B'.($highestRow+$i+1), $characteristic[$i]['value']);
+            }
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.'test'.'.xls');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PHPExcel_IOFactory::createWriter($xsl, 'Excel5');
+        $writer->save('php://output');
+    }
+
     /* Берем столбцы из excel документа */
     public static function getColumns($filename)
     {
@@ -226,6 +278,21 @@ class BaseMaterial extends \yii\db\ActiveRecord
             $ids[] = $row['id'];
         }
         return $ids;
+    }
+
+
+    public static function getLabelsOnly($group)
+    {
+        $labels = (new Query())
+            ->select('label')
+            ->from(CharacteristicGroup::tableName())
+            ->where(['id_group' => $group->id])
+            ->all();
+        foreach ($labels as $label)
+        {
+            $arr[] = $label['label'];
+        }
+        return $arr;
     }
 
     /* Получаем имена и лейблы из таблицы характеристик групп по id группы*/

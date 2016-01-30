@@ -10,8 +10,8 @@ use app\models\DynamicFormMaterial;
 
 $this->title = 'Материалы группы ';
 $this->params['breadcrumbs'][] = $this->title;
-$url = Url::to(['/basematerial/model', 'id' => $group_id]);
-$urlUpdate = Url::to(['/basematerial/update']);
+$url = Url::toRoute(['/basematerial/model', 'id' => $group_id]);
+$urlUpdate = Url::toRoute(['/basematerial/update']);
 $script = <<< JS
 var idMaterial;
 $('.listitem').click(function(){

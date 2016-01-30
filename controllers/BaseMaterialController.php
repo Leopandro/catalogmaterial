@@ -6,6 +6,8 @@ use app\models\AccessUserGroupMaterial;
 use app\models\BaseMaterial;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
+use app\models\ExcelReport;
+use app\models\ExcelReports;
 use app\models\ImportFromExcel;
 use app\models\ImportModel;
 use app\models\ImportModelForm;
@@ -13,6 +15,7 @@ use app\models\UploadForm;
 use Yii;
 use app\models\BaseMaterial2;
 use app\models\BaseMaterialSearch;
+use yii\db\Query;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -99,6 +102,40 @@ class BasematerialController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionAddreport()
+    {
+        $group_id = Yii::$app->request->get('group_id');
+        $material_id = Yii::$app->request->get('id');
+        $user_id = Yii::$app->user->identity->id;
+        if (Yii::$app->request->isAjax) {
+            if (
+                $row = (new Query())
+                ->select('id')
+                ->from(ExcelReport::tableName())
+                ->where(['user_id' => $user_id, 'catalog_id' => $group_id, 'base_material_id' => $material_id])
+                ->one()
+            )
+                return "<div class=\"alert alert-warning\">"."Этот материал уже добавлен в отчет"."</div>";
+            else
+            {
+                $row = (new Query())
+                    ->createCommand()
+                    ->insert(ExcelReport::tableName(), ['user_id' => $user_id, 'catalog_id' => $group_id, 'base_material_id' => $material_id])
+                    ->execute();
+                return "<div class=\"alert alert-success\">"."Добавлено в отчет"."</div>";
+            }
+        }
+    }
+
+    public function actionReport()
+    {
+        //$id_group = Yii::$app->request->get('group_id');
+
+        if (Yii::$app->user->identity->role_id == 2) {
+            BaseMaterial::getExcelReport();
+        }
     }
 
     public function actionImport()
