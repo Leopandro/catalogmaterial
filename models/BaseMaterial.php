@@ -195,8 +195,8 @@ class BaseMaterial extends \yii\db\ActiveRecord
     public static function getExcelReport()
     {
         $user_id = Yii::$app->user->identity->id;
-        $path = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/';
-        $xslPath = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/'.'report.xls';
+//        $path = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/';
+//        $xslPath = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/'.'report.xls';
         $xsl = new PHPExcel();
         $xsl->setActiveSheetIndex(0);
         $sheet = $xsl->getActiveSheet();
@@ -211,36 +211,39 @@ class BaseMaterial extends \yii\db\ActiveRecord
             ->from(ExcelReport::tableName())
             ->where(['user_id' => $user_id])
             ->all();
-        foreach ($rows as $row)
-        {
-            $group = Catalog::findOne(['id' => $row['catalog_id']]);
-            $material = BaseMaterial::findOne(['id' => $row['base_material_id']]);
-            $labelsForSearch = self::getLabelsOnly($group);
-            $characteristic = self::getLabels($group);
-            $charQuery= (new Query())
-                ->select($labelsForSearch)
-                ->from($group->table_name)
-                ->where(['id' => $row['base_material_id']])
-                ->one();
-            for ($i = 0; $i < count($characteristic); $i++)
-            {
-                $characteristic[$i]['value'] = $charQuery[$characteristic[$i]['label']];
+        if ($rows) {
+            foreach ($rows as $row) {
+                $group = Catalog::findOne(['id' => $row['catalog_id']]);
+                $material = BaseMaterial::findOne(['id' => $row['base_material_id']]);
+                $labelsForSearch = self::getLabelsOnly($group);
+                $characteristic = self::getLabels($group);
+                $charQuery = (new Query())
+                    ->select($labelsForSearch)
+                    ->from($group->table_name)
+                    ->where(['id' => $row['base_material_id']])
+                    ->one();
+                for ($i = 0; $i < count($characteristic); $i++) {
+                    $characteristic[$i]['value'] = $charQuery[$characteristic[$i]['label']];
+                }
+                $highestRow = $sheet->getHighestRow();
+                $sheet->mergeCells('A' . ($highestRow) . ':' . 'B' . ($highestRow));
+                $sheet->setCellValue('A' . ($highestRow), $group->name . '. ' . $material->name);
+                for ($i = 0; $i < count($characteristic); $i++) {
+                    $sheet->setCellValue('A' . ($highestRow + $i + 1), $characteristic[$i]['name']);
+                    $sheet->setCellValue('B' . ($highestRow + $i + 1), $characteristic[$i]['value']);
+                }
             }
-            $highestRow = $sheet->getHighestRow();
-            $sheet->mergeCells('A'.($highestRow).':'.'B'.($highestRow));
-            $sheet->setCellValue('A'.($highestRow), $group->name.'. '.$material->name);
-            for ($i = 0; $i < count($characteristic); $i++)
-            {
-                $sheet->setCellValue('A'.($highestRow+$i+1), $characteristic[$i]['name']);
-                $sheet->setCellValue('B'.($highestRow+$i+1), $characteristic[$i]['value']);
-            }
-        }
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename='.'test'.'.xls');
-        header('Cache-Control: max-age=0');
+            $delete = (new Query())
+                ->createCommand()
+                ->delete(ExcelReport::tableName(), ['user_id' => Yii::$app->user->identity->id])
+                ->execute();
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename='.'test'.'.xls');
+            header('Cache-Control: max-age=0');
 
-        $writer = \PHPExcel_IOFactory::createWriter($xsl, 'Excel5');
-        $writer->save('php://output');
+            $writer = \PHPExcel_IOFactory::createWriter($xsl, 'Excel5');
+            $writer->save('php://output');
+        }
     }
 
     /* Берем столбцы из excel документа */
