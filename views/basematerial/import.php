@@ -16,6 +16,15 @@ function isDublicate(arr)
     }
     return false;
 }
+function isInArray(arr, el)
+{
+    for (var i=0; i < arr.length; i++)
+    {
+        if (arr[i] == el)
+        return true;
+    }
+    return false;
+}
 $('form button[type=submit]').click(function(){
     var arrColumns = [];
     var i = 0;
@@ -24,7 +33,8 @@ $('form button[type=submit]').click(function(){
         arrColumns[i] = $(this).val();
         i++;
     });
-    if ($.inArray('', arrColumns) == 1)
+    $('.alert-danger').addClass('hidden');
+    if (isInArray(arrColumns, ''))
     {
         $('.alert-danger').removeClass('hidden');
         $('.alert-danger').text('Выберите колонки, соответствующие характеристикам');
@@ -36,7 +46,6 @@ $('form button[type=submit]').click(function(){
         $('.alert-danger').text('Колонки не могут повторяться');
         return false;
     }
-    $('.alert-danger').addClass('hidden');
     return true;
 });
 
@@ -89,7 +98,7 @@ $this->registerCss("
         <div class="alert alert-danger hidden">
 
         </div>
-        <button type="submit">Импортировать</button>
+        <button type="submit" class="btn btn-primary">Импортировать</button>
     </div>
     <? ActiveForm::end() ?>
 </div>
