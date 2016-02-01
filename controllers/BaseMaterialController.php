@@ -6,12 +6,10 @@ use app\models\AccessUserGroupMaterial;
 use app\models\BaseMaterial;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
+use app\models\DynamicMaterialFormSearch;
 use app\models\ExcelReport;
-use app\models\ExcelReports;
 use app\models\ImportFromExcel;
 use app\models\ImportModel;
-use app\models\ImportModelForm;
-use app\models\UploadForm;
 use Yii;
 use app\models\BaseMaterial2;
 use app\models\BaseMaterialSearch;
@@ -76,19 +74,27 @@ class BasematerialController extends Controller
                 $group = Catalog::findOne(['id' => $id]);
                 if (AccessUserGroupMaterial::findOne(['id_group_material' => $id, 'id_user' => Yii::$app->user->identity->id]))
                 {
+                    $model = new DynamicMaterialFormSearch();
+                    $model->getSearchForm($id);
                     $group = Catalog::findOne(['id' => $id]);
 
                     // берем все id из сгенерированной таблицы для поиска по base_material */
                     $ids = BaseMaterial::getIds($group->table_name);
 
                     // поиск по всем id из base_material
-                    $dataProvider = new ActiveDataProvider([
-                        'query' => BaseMaterial::find()->where(['id' => $ids])
-                    ]);
+                    if ($model->load(Yii::$app->request->post())){
+                        $dataProvider = (new BaseMaterial())->filterSearch($model->columnSettings, $id);
+                    }
+                    else{
+                        $dataProvider = new ActiveDataProvider([
+                            'query' => BaseMaterial::find()->where(['id' => $ids])
+                        ]);
+                    }
                     return $this->render('userindex', [
                         'group_name' => $group->name,
                         'group_id' => $id,
-                        'dataProvider' => $dataProvider
+                        'dataProvider' => $dataProvider,
+                        'model' => $model
                     ]);
                 }
                 else
@@ -137,8 +143,15 @@ class BasematerialController extends Controller
         if (Yii::$app->user->identity->role_id == 2) {
             BaseMaterial::getExcelReport();
         }
+        if (Yii::$app->request->isAjax)
+        {
+            if (Yii::$app->user->identity->role_id == 2) {
+                BaseMaterial::getExcelReport();
+            }
+        }
         //$this->renderAjax('index');
     }
+
 
     public function actionImport()
     {
