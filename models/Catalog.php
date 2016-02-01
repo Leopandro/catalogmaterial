@@ -105,9 +105,11 @@ class Catalog extends ActiveRecord
         $childs = self::sortTree($childs);
         foreach ($childs as $child)
         {
-            if( Yii::$app->user->identity->role_id == 2) {
-                if (AccessUserGroupMaterial::find()->where(['id_user' => Yii::$app->user->identity->id, 'id_group_material' => $child->id])->one())
-                {
+            if (Yii::$app->user->identity->role_id == 2)
+            {
+                if(AccessUserGroupMaterial::find()->where(['id_user' => Yii::$app->user->identity->id, 'id_group_material' => $child->id])->one()
+                    ||
+                    $child->node_type == 0) {
                     $obj = [
                         'text' => $child->name,
                         'id' => $child->id,
@@ -125,8 +127,7 @@ class Catalog extends ActiveRecord
                     $arr[] = (object)$obj;
                 }
             }
-            else
-            {
+            else{
                 $obj = [
                     'text' => $child->name,
                     'id' => $child->id,

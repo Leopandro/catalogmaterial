@@ -56,6 +56,10 @@ a.desc:after {
     content: /*"\e114"*/ "\e152";
 }
 
+.listitem{
+    white-space: normal;
+}
+
 .sort-numerical a.asc:after {
     content: "\e153";
 }
