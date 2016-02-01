@@ -7,7 +7,7 @@ use \yii\bootstrap\Modal;
 
 $url = Url::toRoute(['/basematerial/model', 'id' => $group_id]);
 $urlReport = Url::toRoute(['basematerial/addreport']);
-$urlGetExcel = Url::toRoute(['basematerial/report']);
+$urlGetExcel = Url::toRoute(['basematerial/getreportexcel']);
 $script = <<< JS
 var idMaterial;
 $('.listitem').click(function(){
@@ -22,12 +22,13 @@ $('.listitem').click(function(){
         $("#resultmessage").addClass("hidden");
     });
 })
-$("#test").click(function(){
+$("#getExcelReport").click(function(){
     var x = $.ajax({
         'url' : '{$urlGetExcel}'
-    }).done(function(data){
+    }).done(function(){
         console.log(x);
-        console.log(data);
+        if (x.responseText != 'false')
+            window.open(JSON.parse(x.responseText), '_self');
     })
 })
 $("#report").click(function(){
@@ -56,7 +57,11 @@ $this->registerJs($script, yii\web\View::POS_READY);
     <div>
         <?= Html::a('Назад в каталог', ['/catalog/index'], ['class' => 'btn btn-primary']) ?>
 
-        <?= Html::a('Сгенерировать отчет', ['/basematerial/report'], ['class' => 'btn btn-primary']) ?>
+
+        <button id="getExcelReport" class="btn btn-primary">
+            Сгенерировать отчет
+        </button>
+<!--        --><?//= Html::a('Сгенерировать отчет', ['/basematerial/report'], ['class' => 'btn btn-primary']) ?>
 
         <?
         Modal::begin([

@@ -136,20 +136,22 @@ class BasematerialController extends Controller
         }
     }
 
+    public function actionGetreportexcel()
+    {
+        if (Yii::$app->request->isAjax)
+        {
+            if (ExcelReport::findOne(['user_id' => Yii::$app->user->identity->id]))
+                return json_encode(Url::toRoute(['basematerial/report']));
+            else
+                return json_encode(false);
+        }
+    }
+
     public function actionReport()
     {
-        //$id_group = Yii::$app->request->get('group_id');
-
         if (Yii::$app->user->identity->role_id == 2) {
             BaseMaterial::getExcelReport();
         }
-        if (Yii::$app->request->isAjax)
-        {
-            if (Yii::$app->user->identity->role_id == 2) {
-                BaseMaterial::getExcelReport();
-            }
-        }
-        //$this->renderAjax('index');
     }
 
 
