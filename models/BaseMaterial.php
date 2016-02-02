@@ -7,6 +7,8 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\mysql\Schema;
 use yii\db\Query;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
 /**
  * This is the model class for table "base_material".
  *
@@ -52,7 +54,6 @@ class BaseMaterial extends \yii\db\ActiveRecord
             'note' => 'Примечание',
         ];
     }
-
 
     public static function getAttributesArray()
     {
@@ -243,6 +244,148 @@ class BaseMaterial extends \yii\db\ActiveRecord
             ->execute();
     }
 
+    //Вывод отчета в excel
+    public static function getReports()
+    {
+        $materials = ExcelReport::find()
+            ->where(['user_id' => Yii::$app->user->id])
+            ->orderBy('catalog_id')
+            ->all();
+        $xls = new PHPExcel();
+        $xls->setActiveSheetIndex(0);
+        $sheet = $xls->getActiveSheet();
+        $sheet->getColumnDimension('A')->setWidth(30);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(22);
+        $sheet->getColumnDimension('D')->setWidth(25);
+        $sheet->getColumnDimension('E')->setWidth(22);
+
+        //перевод строки
+        foreach (range('A','Z') as $columnName){
+            $sheet->getStyle($columnName)->getAlignment()->setWrapText(true);
+            $sheet->getStyle($columnName)->getAlignment()->setHorizontal(
+                PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle($columnName)->getAlignment()->setVertical(
+                PHPExcel_Style_Alignment::VERTICAL_TOP);
+        }
+        //установка ширины
+        foreach (range('F','Z') as $columnName){
+            $sheet->getColumnDimension($columnName)->setWidth(15);
+        }
+        $lastCatalogId = 0;
+        for ($i = 0; $i < count($materials); $i++)
+        {
+            if ($materials[$i]['catalog_id'] != $lastCatalogId){
+                $i == 0 ? $highestrow = $sheet->getHighestRow() : $highestrow = $sheet->getHighestRow()+1;
+                $catalog = Catalog::findOne(['id' => $materials[$i]['catalog_id']]);
+                $sheet->mergeCells('A'.$highestrow.':'.'E'.$highestrow);
+                $sheet->setCellValue('A'.$highestrow, $catalog->name);
+                $sheet->getStyle('A'.$highestrow)->applyFromArray([
+                    'fill' => [
+                        'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                        'color' => array('rgb' => 'FFFF80')
+                    ]
+                ]);
+                $lastCatalogId = $materials[$i]['catalog_id'];
+                //заполняем названия столбцов
+                {
+                    $highestrow = $sheet->getHighestRow() + 1;
+                    $materialColumnNames = self::getAttributesArray()[0];
+                    $characteristicColumnNames = self::getNamesOnly($catalog);
+                    $j = 0;
+                    foreach ($materialColumnNames as $columnName)
+                    {
+                        $cellAddress = chr(ord('A')+$j).$highestrow;
+                        $sheet->setCellValue($cellAddress, $columnName);
+                        $j++;
+                    }
+                    foreach ($characteristicColumnNames as $columnName)
+                    {
+                        $cellAddress = chr(ord('A')+$j).$highestrow;
+                        $sheet->setCellValue($cellAddress, $columnName);
+                        $j++;
+                    }
+                }
+                //заполняем значения
+                {
+                    $highestrow = $sheet->getHighestRow() + 1;
+                    $materialAttributes = BaseMaterial::findOne(['id' => $materials[$i]['base_material_id']]);
+                    $j = 0;
+                    foreach($materialAttributes as $key => $value)
+                    {
+                        if ($key != 'id')
+                        {
+                            $cellAddress = chr(ord('A')+$j).$highestrow;
+                            $sheet->setCellValue($cellAddress, $value);
+                            $j++;
+                        }
+                    }
+                    $materialCharacteristics = (new Query())
+                        ->select('*')
+                        ->from($catalog->table_name)
+                        ->where(['id' => $materials[$i]['base_material_id']])
+                        ->one();
+                    foreach($materialCharacteristics as $key => $value)
+                    {
+                        if ($key != 'id')
+                        {
+                            $cellAddress = chr(ord('A')+$j).$highestrow;
+                            $sheet->setCellValue($cellAddress, $value);
+                            $j++;
+                        }
+                    }
+                    $lastCatalogId = $materials[$i]['catalog_id'];
+                }
+            }
+            else{
+                $catalog = Catalog::findOne(['id' => $materials[$i]['catalog_id']]);
+                //заполняем названия столбцов
+
+                //заполняем значения
+                $highestrow = $sheet->getHighestRow() + 1;
+                $materialAttributes = BaseMaterial::findOne(['id' => $materials[$i]['base_material_id']]);
+                $j = 0;
+                foreach($materialAttributes as $key => $value)
+                {
+                    if ($key != 'id')
+                    {
+                        $cellAddress = chr(ord('A')+$j).$highestrow;
+                        $sheet->setCellValue($cellAddress, $value);
+                        $j++;
+                    }
+                }
+                $materialCharacteristics = (new Query())
+                    ->select('*')
+                    ->from($catalog->table_name)
+                    ->where(['id' => $materials[$i]['base_material_id']])
+                    ->one();
+                foreach($materialCharacteristics as $key => $value)
+                {
+                    if ($key != 'id')
+                    {
+                        $cellAddress = chr(ord('A')+$j).$highestrow;
+                        $sheet->setCellValue($cellAddress, $value);
+                        $j++;
+                    }
+                }
+                $lastCatalogId = $materials[$i]['catalog_id'];
+            }
+        }
+
+        $delete = (new Query())
+            ->createCommand()
+            ->delete(ExcelReport::tableName(), ['user_id' => Yii::$app->user->identity->id])
+            ->execute();
+
+        $filename = 'Report_materials_'.Yii::$app->user->identity->username.'_'.date('d-m-Y_H:i:s', time());
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.$filename.'.xls');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PHPExcel_IOFactory::createWriter($xls, 'Excel5');
+        $writer->save('php://output');
+    }
+
     public static function getExcelReport()
     {
         $user_id = Yii::$app->user->identity->id;
@@ -251,12 +394,6 @@ class BaseMaterial extends \yii\db\ActiveRecord
         $xsl = new PHPExcel();
         $xsl->setActiveSheetIndex(0);
         $sheet = $xsl->getActiveSheet();
-//        if (!is_dir($path))
-//        {
-//            mkdir($path);
-//            $writer = \PHPExcel_IOFactory::createWriter($xsl, 'Excel5');
-//            file_put_contents($xslPath, $writer);
-//        }
         $rows = (new Query())
             ->select(['catalog_id', 'base_material_id'])
             ->from(ExcelReport::tableName())
@@ -335,6 +472,20 @@ class BaseMaterial extends \yii\db\ActiveRecord
         return $ids;
     }
 
+
+    public static function getNamesOnly($group)
+    {
+        $labels = (new Query())
+            ->select('name')
+            ->from(CharacteristicGroup::tableName())
+            ->where(['id_group' => $group->id])
+            ->all();
+        foreach ($labels as $label)
+        {
+            $arr[] = $label['name'];
+        }
+        return $arr;
+    }
 
     public static function getLabelsOnly($group)
     {

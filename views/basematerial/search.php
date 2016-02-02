@@ -78,6 +78,7 @@ else
 ?>
 <br>
 <button type="submit" class="btn btn-primary">Применить фильтр</button>
+<button type="button" id="clearfilter" class="btn btn-warning">Очистить фильтр</button>
+
 <?
 ActiveForm::end() ?>
-<button id="clearfilter" class="btn btn-warning">Очистить фильтр</button>
