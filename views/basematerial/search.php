@@ -1,13 +1,22 @@
 <?php
 use yii\widgets\ActiveForm;
 
+$script = <<< JS
+$('#clearfilter').click(function(){
+    $('input:not(:hidden)').each(function(){
+        $(this).val('')
+    });
+    $('select').val('');
+})
+JS;
+$this->registerJs($script);
 ?>
 <?
 $form = ActiveForm::begin();
-
+if ($model->columnSettings)
 foreach ($model->columnSettings as $currentColumnSetting)
 {
-    echo $currentColumnSetting['name'];
+    echo '<div>'.$currentColumnSetting['name'].'</div>';
     if ($currentColumnSetting['type_value'] == 1)
     {
         echo \yii\helpers\Html::hiddenInput(
@@ -18,7 +27,7 @@ foreach ($model->columnSettings as $currentColumnSetting)
             $currentColumnSetting['label']);
         echo \yii\helpers\Html::textInput(
                 'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][value]',
-                $currentColumnSetting['value']).'<br>';
+                $currentColumnSetting['value'], ["class" => "form-control"]).'<br>';
         echo \yii\helpers\Html::hiddenInput(
             'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][type_value]',
             $currentColumnSetting['type_value']);
@@ -35,25 +44,40 @@ foreach ($model->columnSettings as $currentColumnSetting)
             'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][firstcompare]',
             $currentColumnSetting['firstcompare'],
             \app\models\DynamicMaterialFormSearch::$comparasion,
-            ['prompt' => '']
+            ['prompt' => '', "class" => "form-control", "style" => "width:15%"]
             );
         echo \yii\helpers\Html::textInput(
-                'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][firstvalue]', $currentColumnSetting['firstvalue']);
+                'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][firstvalue]',
+                $currentColumnSetting['firstvalue'],
+                [
+                    "class" => "form-control",
+                    "style" => "width:35%"
+                ]);
         //echo $currentColumnSetting['label']['firstvalue'];
         echo \yii\helpers\Html::dropDownList(
             'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][secondcompare]',
-            $currentColumnSetting['secondcompare'],
+            $currentColumnSetting['secondcompare'
+            ],
             \app\models\DynamicMaterialFormSearch::$comparasion,
-            ['prompt' => '']
+            ['prompt' => '', "class" => "form-control", "style" => "width:15%"]
         );
         echo \yii\helpers\Html::textInput(
-                'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][secondvalue]', $currentColumnSetting['secondvalue']).'<br>';
+                'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][secondvalue]',
+                $currentColumnSetting['secondvalue'],
+                [
+                    "class" => "form-control",
+                    "style" => "width:35%"
+                ]).'<br>';
         echo \yii\helpers\Html::hiddenInput(
             'DynamicMaterialFormSearch[columnSettings]['.$currentColumnSetting['label'].'][type_value]',
             $currentColumnSetting['type_value']);
     }
 }
+else
+    echo '<p>Нет данных группы</p>'
 ?>
-<button type="submit" class="btn btn-primary">Поиск по фильтру</button>
+<br>
+<button type="submit" class="btn btn-primary">Применить фильтр</button>
 <?
 ActiveForm::end() ?>
+<button id="clearfilter" class="btn btn-warning">Очистить фильтр</button>

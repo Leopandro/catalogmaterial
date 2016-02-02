@@ -12,6 +12,7 @@ use yii\widgets\DetailView;
 
 <?= DetailView::widget([
     'model' => $model,
-    'attributes' => $columns
+    'attributes' => $columns,
+    'template' => '<tr><td style="width:25%">{label}</td><td>{value}</td></tr>'
 ]);
 ?>

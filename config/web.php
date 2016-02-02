@@ -31,7 +31,12 @@ $config = [
         ]
     ],
     'components' => [
-
+		'urlManager' => [
+			//'enablePrettyUrl' => true,
+			//'showScriptName' => false,
+			'rules' => [
+			],
+		],
         'imap' => [
           'class' => '\roopz\imap\Imap',
           'connection' => [

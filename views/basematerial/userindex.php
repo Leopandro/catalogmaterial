@@ -5,9 +5,18 @@ use yii\widgets\ListView;
 use yii\helpers\Url;
 use \yii\bootstrap\Modal;
 
+
+$this->title = 'Материалы группы ';
+$this->params['breadcrumbs'][] = $this->title;
 $url = Url::toRoute(['/basematerial/model', 'id' => $group_id]);
 $urlReport = Url::toRoute(['basematerial/addreport']);
 $urlGetExcel = Url::toRoute(['basematerial/getreportexcel']);
+$css = <<< CSS
+.form-control{
+    display:inline;
+}
+CSS;
+
 $script = <<< JS
 var idMaterial;
 $('.listitem').click(function(){
@@ -28,7 +37,9 @@ $("#getExcelReport").click(function(){
     }).done(function(){
         console.log(x);
         if (x.responseText != 'false')
-            window.open(JSON.parse(x.responseText), '_self');
+            window.open(JSON.parse(x.responseText), '_self')
+        else
+            alert('Не добавлены материалы в отчет')
     })
 })
 $("#report").click(function(){
@@ -43,6 +54,7 @@ $("#report").click(function(){
     });
 })
 JS;
+$this->registerCss($css);
 $this->registerJs($script, yii\web\View::POS_READY);
 ?>
 <? if (!$message) {?>
@@ -64,6 +76,8 @@ $this->registerJs($script, yii\web\View::POS_READY);
 <!--        --><?//= Html::a('Сгенерировать отчет', ['/basematerial/report'], ['class' => 'btn btn-primary']) ?>
 
         <?
+        if ($model)
+        {
         Modal::begin([
             'header' => '<h4> Поиск по фильтру </h4>',
             'toggleButton' => ['label' => 'Фильтр','class' => 'btn btn-primary']
@@ -73,21 +87,32 @@ $this->registerJs($script, yii\web\View::POS_READY);
             [
                 'model' => $model
             ]);
-        Modal::end();?>
+        Modal::end();
+        }?>
     </div>
+    <br>
     <div class="col-xs-3">
         <?= ListView::widget([
             'dataProvider' => $dataProvider,
             'itemView' => function ($model) {
-                return Html::tag('button', $model->name, ['type' => 'button', 'class' => 'btn btn-sm btn-default listitem', 'id' => $model->id, 'style'=>'width:200px;text-align: left']);
+                return Html::tag(
+                    'button',
+                    $model->name,
+                    [
+                        'type' => 'button',
+                        'class' => 'btn btn-sm btn-default listitem',
+                        'id' => $model->id,
+                        'style'=>'width:200px;text-align: left'
+                    ]);
             }
         ]); ?>
     </div>
-    <div class="col-xs-6">
+    <div class="col-xs-9">
         <div id="detailview"></div>
         <div id="buttonlist" class="hidden">
             <button class="btn btn-success" id="report">В отчет</button>
         </div>
+        <br>
         <div id="resultmessage">
 
         </div>

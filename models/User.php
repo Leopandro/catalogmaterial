@@ -55,8 +55,6 @@ class User extends BaseUser
         } else if(Yii::$app->user->identity->role_id == User::ROLE_USER){
             return [
                 ['label' => 'Каталог разделов', 'url' => ['/catalog/index']],
-                ['label' => 'Каталог материалов', 'url' => ['/tasks-manager/index']],
-                ['label' => 'Отчет', 'url' => ['/tasks-manager/index']],
                 [
                     'label' => 'Выйти (' . Yii::$app->user->identity->username . ')',
                     'url' => ['/site/logout'],

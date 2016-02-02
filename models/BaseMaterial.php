@@ -288,8 +288,9 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 ->createCommand()
                 ->delete(ExcelReport::tableName(), ['user_id' => Yii::$app->user->identity->id])
                 ->execute();
+            $filename = 'Report_materials_'.Yii::$app->user->identity->username.'_'.date('d-m-Y_H:i:s', time());
             header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachment;filename='.'test'.'.xls');
+            header('Content-Disposition: attachment;filename='.$filename.'.xls');
             header('Cache-Control: max-age=0');
 
             $writer = \PHPExcel_IOFactory::createWriter($xsl, 'Excel5');

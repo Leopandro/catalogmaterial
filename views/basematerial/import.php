@@ -10,7 +10,7 @@ function isDublicate(arr)
     {
         for (var j = 0; j < arr.length; j++)
         {
-            if ((arr[i] == arr[j]) && (i != j))
+            if ((arr[i] == arr[j]) && (i != j) && (arr[i] != '') && (arr[j] != ''))
                return true;
         }
     }
@@ -34,10 +34,10 @@ $('form button[type=submit]').click(function(){
         i++;
     });
     $('.alert-danger').addClass('hidden');
-    if (isInArray(arrColumns, ''))
+    if (arrColumns[0] == '')
     {
         $('.alert-danger').removeClass('hidden');
-        $('.alert-danger').text('Выберите колонки, соответствующие характеристикам');
+        $('.alert-danger').text('Выберите колонку соответствующую наименованию');
         return false;
     }
     if (isDublicate(arrColumns))

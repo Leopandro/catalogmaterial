@@ -205,7 +205,8 @@ class CatalogController extends \yii\web\Controller
     //---------------------------------------------------------------------------------------
     // сверка дат
     public function actionReviseDates() {
-
+        if (Yii::$app->user->identity->role_id == '2')
+            throw new \yii\web\ForbiddenHttpException('У вас нет доступа к этому разделу');
         $model = new BaseMaterial();
         $model->load(Yii::$app->request->get());
         return $this->render('reviseDates',['model'=>$model,'filter'=>$model]);
