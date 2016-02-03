@@ -181,6 +181,48 @@ class BasematerialController extends Controller
         ]);
     }
 
+// вывод в excel
+    public function actionExcel()
+    {
+        /* Находим группу по id */
+        $group_id = $_GET['id'];
+        $group = Catalog::findOne(['id' => $group_id]);
+        //получаем таблицу значений полей таблицы материала и характеристик
+        $model = BaseMaterial::getModels($group);
+
+        //установка ширины
+        $xls = new \PHPExcel();
+        $xls->setActiveSheetIndex(0);
+        $xls->getActiveSheet()->getColumnDimension('A')->setWidth(30);
+        $xls->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+        $xls->getActiveSheet()->getColumnDimension('C')->setWidth(22);
+        $xls->getActiveSheet()->getColumnDimension('D')->setWidth(25);
+        $xls->getActiveSheet()->getColumnDimension('E')->setWidth(22);
+
+        //перевод строки
+        foreach (range('A','Z') as $columnName){
+            $xls->getActiveSheet()->getStyle($columnName)->getAlignment()->setWrapText(true);
+            $xls->getActiveSheet()->getStyle($columnName)->getAlignment()->setHorizontal(
+                PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+            $xls->getActiveSheet()->getStyle($columnName)->getAlignment()->setVertical(
+                PHPExcel_Style_Alignment::VERTICAL_TOP);
+        }
+        //установка ширины
+        foreach (range('F','Z') as $columnName){
+            $xls->getActiveSheet()->getColumnDimension($columnName)->setWidth(15);
+        }
+        //импорт данных из массива $model
+        $xls->getActiveSheet()->fromArray($model, null, 'A1');
+
+        //Вывод excel файла
+        $filename = 'ImportGroup_'.Yii::$app->user->identity->username.'_'.date('d-m-Y_H:i:s', time());
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.$filename.'.xls');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PHPExcel_IOFactory::createWriter($xls, 'Excel5');
+        $writer->save('php://output');
+    }
     // Получаем характеристики по ajax
 
     public function actionModel()
