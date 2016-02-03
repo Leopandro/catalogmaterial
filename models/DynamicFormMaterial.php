@@ -31,7 +31,7 @@ class DynamicFormMaterial extends  DynamicModel {
             $model = BaseMaterial::getModel($groupData, intval($this->id));
             $currentAttributes = $this->attributes();
             foreach ($currentAttributes as $curAttrName) {
-                $valueCurAttr = isset($model->$curAttrName) ? $model->$curAttrName : null ;
+                $valueCurAttr = isset($model->$curAttrName) ? $model->$curAttrName : '';
                 if($curAttrName != 'group_id')
                     $this->$curAttrName = $valueCurAttr;
             }
