@@ -173,6 +173,8 @@ class BasematerialController extends Controller
                 //$import->startRow = $importModel->startRow;
                 $import->filename = $filename;
                 $import->import();
+                $url = Url::toRoute(['basematerial/index', 'id' => $id]);
+                $this->redirect($url);
             }
         }
         return $this->render('import', [

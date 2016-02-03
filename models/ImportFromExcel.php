@@ -63,12 +63,16 @@ class ImportFromExcel extends \yii\base\Model
                 $arr[$key] = ' ';
             }
         }
+        //Количество строк в таблице
         $rowsCount = $sheet->getHighestRow();
-        for ($i = 1; $i < $rowsCount; $i++)
+        for ($i = 1; $i <= $rowsCount; $i++)
         {
             foreach ($arr as $key => $value)
             {
-                $row[$key] = $sheet->getCell($this->settings[$key]['nameExcelColumn'].$i)->getValue();
+                if ($this->settings[$key]['nameExcelColumn'] != '')
+                {
+                    $row[$key] = $sheet->getCell($this->settings[$key]['nameExcelColumn'].$i)->getValue();
+                }
             }
             $rows[] = $row;
         }
@@ -97,11 +101,16 @@ class ImportFromExcel extends \yii\base\Model
         }
         $rowsCount = $sheet->getHighestRow();
         $j = 0;
-        for ($i = 1; $i < $rowsCount; $i++)
+        for ($i = 1; $i <= $rowsCount; $i++)
         {
             foreach ($arr as $key => $value)
             {
-                $row[$key] = $sheet->getCell($settings[$key]['nameExcelColumn'].$i)->getValue();
+                if ($this->settings[$key]['nameExcelColumn'] != '')
+                {
+                    $row[$key] = $sheet->getCell($settings[$key]['nameExcelColumn'] . $i)->getValue();
+                }
+                else
+                    $row[$key] = '';
             }
             $row['id'] = $ids[$j];
             $j++;

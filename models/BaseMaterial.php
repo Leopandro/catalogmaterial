@@ -160,11 +160,11 @@ class BaseMaterial extends \yii\db\ActiveRecord
             if (!$thiscolumn = Yii::$app->db->schema->getTableSchema($group->table_name)->columns[$column->label])
             {
                 if ($column->type_value == 0)
-                    $valueType = Schema::TYPE_INTEGER.'(11) NOT NULL';
+                    $valueType = Schema::TYPE_INTEGER.'(11) NULL';
                 elseif ($column->type_value == 1)
-                    $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
+                    $valueType = Schema::TYPE_STRING.'(255) NULL';
                 elseif ($column->type_value == 2)
-                    $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+                    $valueType = Schema::TYPE_DECIMAL.'(11,2) NULL';
                 $sql->addColumn($group->table_name, $column->label, $valueType)->execute();
             }
             else
@@ -174,23 +174,22 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 if ($columntype == 0)
                 {
                     $columntype = 'integer';
-                    $sqlType = Schema::TYPE_INTEGER.'(11) NOT NULL';
+                    $sqlType = Schema::TYPE_INTEGER.'(11) NULL';
                 }
                 if ($columntype == 1)
                 {
                     $columntype = 'string';
-                    $sqlType = Schema::TYPE_STRING.'(255) NOT NULL';
+                    $sqlType = Schema::TYPE_STRING.'(255) NULL';
                 }
                 if ($columntype == 2)
                 {
                     $columntype = 'decimal';
-                    $sqlType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+                    $sqlType = Schema::TYPE_DECIMAL.'(11,2) NULL';
                 }
                 if ($type != $columntype)
                 {
                     //поменять на $columntype
                     $sql->alterColumn($group->table_name, $column->label, $sqlType)->execute();
-                    $x = 1;
                 }
             }
         }
@@ -231,11 +230,11 @@ class BaseMaterial extends \yii\db\ActiveRecord
         {
             //$columnName = Yii::$app->security->generateRandomString(11);
             if ($column->type_value == 0)
-                $valueType = Schema::TYPE_INTEGER.'(11) NOT NULL';
+                $valueType = Schema::TYPE_INTEGER.'(11) NULL';
             elseif ($column->type_value == 1)
-                $valueType = Schema::TYPE_STRING.'(255) NOT NULL';
+                $valueType = Schema::TYPE_STRING.'(255) NULL';
             elseif ($column->type_value == 2)
-                $valueType = Schema::TYPE_DECIMAL.'(11,2) NOT NULL';
+                $valueType = Schema::TYPE_DECIMAL.'(11,2) NULL';
             $sql->addColumn($group->table_name, $column->label, $valueType)->execute();
         }
 
