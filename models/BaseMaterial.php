@@ -72,7 +72,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
             $baseMaterialIds = (new Query())
                 ->select('id')
                 ->from(BaseMaterial::tableName())
-                ->where(['name' => $params['name']['value']])
+                ->where(['like', 'name', $params['name']['value']])
                 ->all();
         if (is_array($baseMaterialIds))
         {
