@@ -131,7 +131,8 @@ class BasematerialController extends Controller
                     ->createCommand()
                     ->insert(ExcelReport::tableName(), ['user_id' => $user_id, 'catalog_id' => $group_id, 'base_material_id' => $material_id])
                     ->execute();
-                return "<div class=\"alert alert-success\">"."Добавлено в отчет"."</div>";
+                $materialName = BaseMaterial::findOne(['id' => $material_id])->name;
+                return "<div class=\"alert alert-success\">"."$materialName добавлен в отчет"."</div>";
             }
         }
     }
