@@ -113,7 +113,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
             $ids[] = $row['id'];
         }
         return new ActiveDataProvider([
-            'query' => BaseMaterial::find()->where(['id' => $ids])
+            'query' => BaseMaterial::find()->where(['id' => $ids]),
         ]);
     }
 
