@@ -116,6 +116,7 @@ class BasematerialController extends Controller
         $group_id = Yii::$app->request->get('group_id');
         $material_id = Yii::$app->request->get('id');
         $user_id = Yii::$app->user->identity->id;
+        $materialName = BaseMaterial::findOne(['id' => $material_id])->name;
         if (Yii::$app->request->isAjax) {
             if (
                 $row = (new Query())
@@ -124,14 +125,13 @@ class BasematerialController extends Controller
                 ->where(['user_id' => $user_id, 'catalog_id' => $group_id, 'base_material_id' => $material_id])
                 ->one()
             )
-                return "<div class=\"alert alert-warning\">"."Этот материал уже добавлен в отчет"."</div>";
+                return "<div class=\"alert alert-warning\">"."$materialName уже добавлен в отчет"."</div>";
             else
             {
                 $row = (new Query())
                     ->createCommand()
                     ->insert(ExcelReport::tableName(), ['user_id' => $user_id, 'catalog_id' => $group_id, 'base_material_id' => $material_id])
                     ->execute();
-                $materialName = BaseMaterial::findOne(['id' => $material_id])->name;
                 return "<div class=\"alert alert-success\">"."$materialName добавлен в отчет"."</div>";
             }
         }
