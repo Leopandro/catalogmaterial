@@ -80,7 +80,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
             {
                 $ids[] = $id['id'];
             }
-            $query->where(['id' => $ids]);
+            $query->andWhere(['id' => $ids]);
         }
         foreach ($params as $param)
         {
