@@ -62,6 +62,8 @@
         showTags: false,
         multiSelect: false,
 
+        renderCustom:function(options,treeItem,node){},
+
         // Event handlers
         onNodeChecked: undefined,
         onNodeCollapsed: undefined,
@@ -72,7 +74,7 @@
         onNodeUnchecked: undefined,
         onNodeUnselected: undefined,
         onSearchComplete: undefined,
-        onSearchCleared: undefined,
+        onSearchCleared: undefined
     };
 
     _default.options = {
@@ -618,6 +620,10 @@
                         );
                 });
             }
+
+            if($.isFunction(_this.options.renderCustom))
+                _this.options.renderCustom.apply(this,[_this.options,treeItem,node]);
+
 
             // Add item to the tree
             _this.$wrapper.append(treeItem);

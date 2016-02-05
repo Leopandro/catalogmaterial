@@ -10,7 +10,13 @@ $this->params['breadcrumbs'][] = $this->title;
 $url = Url::toRoute(['/basematerial/index']);
 $script = <<< JS
 console.log({$leaves});
-$('#tree').treeview({data: $leaves});
+$('#tree').treeview({data: $leaves,renderCustom:function(options,treeItem,node){
+
+        if($(treeItem).hasClass('group-color')){
+            $(treeItem).attr('title','Нажмите 2 раза для просмотра материала.')
+        }
+
+    }});
     setCookie('group-name', '');
 $('#tree').on('dblclick','.group-color',function(event){
     var id = $(this).attr('id');

@@ -76,7 +76,12 @@ $script = <<< JS
         }
     });
 
-    $('#tree').treeview({data: $leaves});
+    $('#tree').treeview({data: $leaves,renderCustom:function(options,treeItem,node){
+         if($(treeItem).hasClass('group-color')){
+            $(treeItem).attr('title','Нажмите 2 раза для просмотра материала.')
+        }
+
+    }});
     setCookie('group-name', '');
 
 
