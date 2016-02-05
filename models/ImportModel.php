@@ -57,7 +57,7 @@ class ImportModel extends Model
     {
         $path = Yii::getAlias('@app/runtime/uploads/').Yii::$app->user->identity->id.'/';
         if (!is_dir($path)) mkdir($path, 0777, true);
-        $filename = Yii::$app->security->generateRandomString(9);
+        $filename = "import";
         $this->file->saveAs($path . $filename . '.' . $this->file->extension);
         return $path . $filename . '.' . $this->file->extension;
     }
