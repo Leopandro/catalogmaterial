@@ -124,6 +124,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
             }
         }
         $rows = $query->all();
+        $ids = [];
         foreach ($rows as $row)
         {
             $ids[] = $row['id'];
