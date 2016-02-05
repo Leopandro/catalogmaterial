@@ -21,8 +21,20 @@ class DynamicMaterialFormSearch extends Model
         '<=' => '<=',
         '=' => '='
     ];
+
+    public function getBaseSearchForm()
+    {
+        $this->columnSettings['name'] = [
+            'name' => 'Название',
+            'label' => 'name',
+            'value' => '',
+            'type_value' => 1
+        ];
+    }
+
     public function getSearchForm($id)
     {
+        $this->getBaseSearchForm();
         $settings = CharacteristicGroup::find()->where(['id_group' => $id])->all();
         foreach ($settings as $setting)
         {

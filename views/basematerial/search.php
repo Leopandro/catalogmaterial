@@ -7,6 +7,7 @@ $('#clearfilter').click(function(){
         $(this).val('')
     });
     $('select').val('');
+    $('#search').trigger("click");
 })
 JS;
 $this->registerJs($script);
@@ -77,7 +78,7 @@ else
     echo '<p>Нет данных группы</p>'
 ?>
 <br>
-<button type="submit" class="btn btn-primary">Применить фильтр</button>
+<button type="submit" id="search" class="btn btn-primary">Применить фильтр</button>
 <button type="button" id="clearfilter" class="btn btn-warning">Очистить фильтр</button>
 
 <?
