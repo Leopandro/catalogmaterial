@@ -125,14 +125,14 @@ class BasematerialController extends Controller
                 ->where(['user_id' => $user_id, 'catalog_id' => $group_id, 'base_material_id' => $material_id])
                 ->one()
             )
-                return "<div class=\"alert alert-warning\">"."$materialName уже добавлен в отчет"."</div>";
+                return "<div class=\"alert alert-warning\">"."\"$materialName\" уже добавлен в отчет"."</div>";
             else
             {
                 $row = (new Query())
                     ->createCommand()
                     ->insert(ExcelReport::tableName(), ['user_id' => $user_id, 'catalog_id' => $group_id, 'base_material_id' => $material_id])
                     ->execute();
-                return "<div class=\"alert alert-success\">"."$materialName добавлен в отчет"."</div>";
+                return "<div class=\"alert alert-success\">"."\"$materialName\" добавлен в отчет"."</div>";
             }
         }
     }
