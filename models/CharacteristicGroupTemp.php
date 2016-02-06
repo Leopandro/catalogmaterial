@@ -47,7 +47,7 @@ class CharacteristicGroupTemp extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'Номер',
-            'name' => 'Имя аттрибута',
+            'name' => 'Имя атрибута',
             'label' => 'Описание',
             'type_value' => 'Тип значения',
             'is_required' => 'Обязательность',
