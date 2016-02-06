@@ -1,10 +1,12 @@
 <?php
 
 namespace app\controllers;
+use app\models\AccessUserGroupMaterial;
 use app\models\BaseMaterial;
 use app\models\Catalog;
 use app\models\CharacteristicGroup;
 use app\models\CharacteristicGroupTemp;
+use app\models\ExcelReport;
 use app\models\GroupSectionForm;
 use app\models\SectionForm;
 use yii\data\ActiveDataProvider;
@@ -199,6 +201,36 @@ class CatalogController extends \yii\web\Controller
         return $this->redirect(['catalog/index']);
     }
 
+
+    //---------------------------------------------
+
+//    public function actionDeleteAllCatalog() {
+//
+//        $allGroups = Catalog::findAll(['node_type'=>1]);
+//        if(is_array($allGroups)) {
+//
+//
+//
+//            foreach($allGroups as $curGroup) {
+//
+//                if(!empty($curGroup->table_name) && !is_null($curGroup->table_name) && Yii::$app->db->schema->getTableSchema($curGroup->table_name, true) !== null) {
+//                        $dd= Yii::$app->db->createCommand()->dropTable($curGroup->table_name)->execute();
+//                }
+//                CharacteristicGroup::deleteAll(['id_group'=>$curGroup->id]);
+//                AccessUserGroupMaterial::deleteAll(['id_group_material'=>$curGroup->id]);
+//                ExcelReport::deleteAll(['catalog_id'=>$curGroup->id]);
+//
+//            }
+//
+//            BaseMaterial::deleteAll();
+//
+//
+//        }
+//
+//        Catalog::deleteAll('id<>:id',[':id'=>1]);
+//
+//
+//    }
 
     //---------------------------------------------------------------------------------------
 

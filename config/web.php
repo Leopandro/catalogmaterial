@@ -32,8 +32,9 @@ $config = [
     ],
     'components' => [
 		'urlManager' => [
-			//'enablePrettyUrl' => true,
-			//'showScriptName' => false,
+            'baseUrl' => '/',
+			'enablePrettyUrl' => true,
+			'showScriptName' => false,
 			'rules' => [
 			],
 		],
@@ -62,6 +63,7 @@ $config = [
 		    'timeFormat' => 'php:H:i:s',
 	    ],
         'request' => [
+            'baseUrl' => '',
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'FOKv4eLGP1g6_rs2inVhHL-MubUPSoMO',
         ],
