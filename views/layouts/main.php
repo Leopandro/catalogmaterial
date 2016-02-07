@@ -54,13 +54,13 @@ AppAsset::register($this);
     </div>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; Material catalog <?= date('Y') ?></p>
-
+<!--<footer class="footer">-->
+<!--    <div class="container">-->
+<!--        <p class="pull-left">&copy; Material catalog --><?//= date('Y') ?><!--</p>-->
+<!---->
 <!--        <p class="pull-right">--><?//= Yii::powered() ?><!--</p>-->
-    </div>
-</footer>
+<!--    </div>-->
+<!--</footer>-->
 
 <?php $this->endBody() ?>
 </body>
