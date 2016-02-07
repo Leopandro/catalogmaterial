@@ -20,7 +20,7 @@ $('#tree').treeview({data: $leaves,renderCustom:function(options,treeItem,node){
     setCookie('group-name', '');
 $('#tree').on('dblclick','.group-color',function(event){
     var id = $(this).attr('id');
-    var url = '{$url}'+'&id='+id;
+    var url = '{$url}'+'?id='+id;
     $(location).attr('href', url);
 });
 JS;

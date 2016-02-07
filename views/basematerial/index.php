@@ -28,7 +28,7 @@ $('.listitem').click(function(){
     console.log(x);
 })
 $("#material").click(function(){
-    var url = '{$urlUpdate}'+'&id='+idMaterial+'&group_id='+'{$group_id}';
+    var url = '{$urlUpdate}'+'?id='+idMaterial+'&group_id='+'{$group_id}';
     console.log('material click');
     $(location).attr('href', url);
 })
@@ -46,6 +46,7 @@ $this->registerJs($script, yii\web\View::POS_READY);
     </h3>
     <p>
         <?= Html::a('Назад в каталог', ['/catalog/index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Добавить материал', ['/basematerial/create', 'id' => $group_id], ['class' => 'btn btn-primary']) ?>
     </p>
     <div class="col-xs-3">
         <?= ListView::widget([

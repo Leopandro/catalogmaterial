@@ -22,7 +22,7 @@ var idMaterial;
 $('.listitem').click(function(){
     idMaterial = $(this).attr('id');
     var x = $.ajax({
-        'url' : '{$url}'+'&material_id='+idMaterial
+        'url' : '{$url}'+'?material_id='+idMaterial
     }).done(function()
     {
         $("#detailview").empty();
@@ -44,7 +44,7 @@ $("#getExcelReport").click(function(){
 })
 $("#report").click(function(){
     var x = $.ajax({
-        'url' : '{$urlReport}'+'&id='+idMaterial+'&group_id='+'{$group_id}'
+        'url' : '{$urlReport}'+'?id='+idMaterial+'&group_id='+'{$group_id}'
     }).done(function()
     {
         console.log(x);

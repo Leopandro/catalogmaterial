@@ -37,6 +37,14 @@ class DynamicFormMaterial extends  DynamicModel {
             }
 
         }
+        else{
+            $currentAttributes = $this->attributes();
+            foreach ($currentAttributes as $curAttrName) {
+                $valueCurAttr = '';
+                if($curAttrName != 'group_id')
+                    $this->$curAttrName = $valueCurAttr;
+            }
+        }
 
     }
 

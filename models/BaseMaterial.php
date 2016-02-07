@@ -62,6 +62,11 @@ class BaseMaterial extends \yii\db\ActiveRecord
         ];
     }
 
+//    public function afterSave()
+//    {
+//        return $this->id;
+//    }
+
     public function filterSearch($params, $id)
     {
         $catalog = Catalog::findOne(['id' => $id]);
@@ -578,6 +583,34 @@ class BaseMaterial extends \yii\db\ActiveRecord
         return ($model = (Object)$obj);
     }
 
+    public static function createModel($group_id, $attributes)
+    {
+        $baseMaterial = new BaseMaterial();
+        $baseMaterial->setAttributes($attributes);
+        if(!$baseMaterial->save())
+            return false;
+        $id_pk = $baseMaterial->id;
+        $catalog = Catalog::findOne(['id' => $group_id]);
+        $extra_table_name = $catalog->table_name;
+        $column_names = self::getLabelsOnly($catalog);
+        $columns['id'] = $id_pk;
+        foreach ($attributes as $key => $value)
+        {
+            if ($key != 'id')
+            {
+                foreach ($column_names as $column_name)
+                {
+                    if ($key == $column_name)
+                        $columns[$key] = $value;
+                    break;
+                }
+            }
+        }
+        $insert = Yii::$app->db->createCommand()
+            ->insert($extra_table_name, $columns)
+            ->execute();
+    }
+
     public static function updateModel($group_id,$material_id,$attributes) {
 
         $baseMaterial = BaseMaterial::findOne(['id'=>$material_id]);
@@ -649,7 +682,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
     {
         $columns = self::getBaseMaterialLabels();
         $labelsCharacteritic = self::getLabels($group);
-        $i = 4;
+        $i = 5;
         foreach ($labelsCharacteritic as $label) {
             $columns[$i]['label'] = $label['name'];
             $columns[$i]['attribute'] = $label['label'];

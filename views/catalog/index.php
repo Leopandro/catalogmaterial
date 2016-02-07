@@ -22,7 +22,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((node_type == 0 || node_type == undefined) && (id))
         {
-            var url = '{$urlCreate}'+'&id='+id;
+            var url = '{$urlCreate}'+'?id='+id;
             $(location).attr('href',url);
         }
         else
@@ -37,7 +37,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((id) && (node_type == 0 || node_type == undefined))
         {
-            var url = '{$urlEdit}'+'&id='+id;
+            var url = '{$urlEdit}'+'?id='+id;
             $(location).attr('href',url);
         }
         else
@@ -52,7 +52,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((id) && (node_type == 0 || node_type == undefined))
         {
-            var url = '{$urlGroup}'+'&id='+id;
+            var url = '{$urlGroup}'+'?id='+id;
             $(location).attr('href',url);
         }
         else
@@ -67,7 +67,7 @@ $script = <<< JS
         console.log('id:',id,' node_type:',node_type);
         if ((id) && (node_type == 1))
         {
-            var url = '{$urlEditGroup}'+'&id='+id;
+            var url = '{$urlEditGroup}'+'?id='+id;
             $(location).attr('href', url);
         }
         else
@@ -87,7 +87,7 @@ $script = <<< JS
 
     $('#tree').on('dblclick','.group-color',function(event){
         var id = $(this).attr('id');
-        var url = '{$urlIndex}'+'&id='+id;
+        var url = '{$urlIndex}'+'?id='+id;
         $(location).attr('href', url);
     });
 
@@ -98,7 +98,7 @@ $script = <<< JS
         console.log(id,node_type);
         if ((id) && (node_type == 1))
         {
-            var url = '{$url}'+'&id='+id;
+            var url = '{$url}'+'?id='+id;
             $(location).attr('href', url);
         }
         else
@@ -112,7 +112,7 @@ $script = <<< JS
         var node_type = node.attr("node_type");
         if ((id) && (node_type == 1))
         {
-            var url = '{$urlUpload}'+'&id='+id;
+            var url = '{$urlUpload}'+'?id='+id;
             $(location).attr('href', url);
         }
         else

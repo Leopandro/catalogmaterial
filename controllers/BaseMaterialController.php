@@ -155,7 +155,6 @@ class BasematerialController extends Controller
         }
     }
 
-
     public function actionImport()
     {
         $id = Yii::$app->request->get('id');
@@ -263,18 +262,18 @@ class BasematerialController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new BaseMaterial2();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
+//    public function actionCreate()
+//    {
+//        $model = new BaseMaterial2();
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        } else {
+//            return $this->render('create', [
+//                'model' => $model,
+//            ]);
+//        }
+//    }
 
     /**
      * Updates an existing BaseMaterial2 model.
@@ -309,6 +308,28 @@ class BasematerialController extends Controller
         return $this->render('update', [
             'modelForm' => $modelForm
         ]);
+    }
+
+    public function actionCreate()
+    {
+        if (Yii::$app->user->identity->role_id == 2)
+        {
+            return false;
+        }
+        $group_id = Yii::$app->request->get('id');
+        $model = new DynamicFormMaterial($group_id);
+        $model->loadDataMaterial();
+        if($model->load(Yii::$app->request->post()) && DynamicModel::validateData($model->attributes,$model->rules())) {
+
+            BaseMaterial::createModel($group_id, $model->attributes);
+
+            $urlToRedirect = Url::toRoute(["/basematerial/index", 'id' => $group_id]);
+            $this->redirect($urlToRedirect);
+        }
+        return $this->render('create',[
+                'modelForm' => $model
+            ]
+        );
     }
 
     /**
