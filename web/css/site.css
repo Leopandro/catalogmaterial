@@ -3,6 +3,11 @@ body {
     height: 100%;
 }
 
+html {
+    overflow-y: scroll;
+}
+
+
 .wrap {
     min-height: 100%;
     height: auto;

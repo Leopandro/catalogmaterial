@@ -69,10 +69,16 @@ class ImportFromExcel extends \yii\base\Model
         {
             foreach ($arr as $key => $value)
             {
-                if ($key == 'date_verify' && $this->settings[$key]['nameExcelColumn'] == '')
+                if ($key == 'date_verify')
                 {
-                    $row[$key] = date("Y-m-d H:i:s");
-                    $x = 1;
+                    if ($this->settings[$key]['nameExcelColumn'] == '')
+                    {
+                        $row[$key] = date("Y-m-d H:i:s");
+                    }
+                    elseif($time = strtotime($sheet->getCell($this->settings[$key]['nameExcelColumn'].$i)->getValue()))
+                    {
+                        $row[$key] = date("Y-m-d H:i:s", $time);
+                    }
                 }
                 elseif ($this->settings[$key]['nameExcelColumn'] != '')
                 {

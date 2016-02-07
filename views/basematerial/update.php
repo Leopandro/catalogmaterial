@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         echo  $form->field($modelForm, $curNameAttribute)->widget(DatePicker::classname(), [
                             //'language' => 'ru',
-                            'dateFormat' => 'yyyy-MM-dd',
+                            'dateFormat' => 'php:d.m.Y',
                             'options'=>['class'=>'form-control']
                         ]);
 

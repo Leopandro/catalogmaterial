@@ -336,9 +336,18 @@ class BaseMaterial extends \yii\db\ActiveRecord
                     {
                         if ($key != 'id')
                         {
-                            $cellAddress = chr(ord('A')+$j).$highestrow;
-                            $sheet->setCellValue($cellAddress, $value);
-                            $j++;
+                            if ($key != 'date_verify')
+                            {
+                                $cellAddress = chr(ord('A')+$j).$highestrow;
+                                $sheet->setCellValue($cellAddress, $value);
+                                $j++;
+                            }
+                            else
+                            {
+                                $cellAddress = chr(ord('A')+$j).$highestrow;
+                                $sheet->setCellValue($cellAddress, date('d.m.Y', strtotime($value)));
+                                $j++;
+                            }
                         }
                     }
                     $materialCharacteristics = (new Query())
@@ -370,9 +379,18 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 {
                     if ($key != 'id')
                     {
-                        $cellAddress = chr(ord('A')+$j).$highestrow;
-                        $sheet->setCellValue($cellAddress, $value);
-                        $j++;
+                        if ($key != 'date_verify')
+                        {
+                            $cellAddress = chr(ord('A')+$j).$highestrow;
+                            $sheet->setCellValue($cellAddress, $value);
+                            $j++;
+                        }
+                        else
+                        {
+                            $cellAddress = chr(ord('A')+$j).$highestrow;
+                            $sheet->setCellValue($cellAddress, date('d.m.Y', strtotime($value)));
+                            $j++;
+                        }
                     }
                 }
                 $materialCharacteristics = (new Query())
@@ -574,7 +592,15 @@ class BaseMaterial extends \yii\db\ActiveRecord
         $basematerial = BaseMaterial::find()->where(['id' => $material_id])->one();
         foreach ($basematerial as $key => $value)
         {
-            $obj[$key] = $value;
+            if ($key != 'date_verify')
+                $obj[$key] = $value;
+            else
+            {
+                if ($value == '' || $value == NULL)
+                    $obj[$key] = $value;
+                elseif($time = strtotime($value))
+                    $obj[$key] = date('d.m.Y', $time);
+            }
         }
         $rows = self::getRow($columns, $group, $material_id);
         foreach ($labels as $label) {
@@ -657,7 +683,12 @@ class BaseMaterial extends \yii\db\ActiveRecord
             $material = array_values($material);
             for ($i = 1; $i < count($material); $i++)
             {
-                $arr[$j][$i-1] = $material[$i];
+                if ($i == 2)
+                {
+                    $arr[$j][$i-1] = date('d.m.Y', strtotime($material[$i]));
+                }
+                else
+                    $arr[$j][$i-1] = $material[$i];
             }
         }
         $labels = self::getLabels($group);

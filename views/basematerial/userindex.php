@@ -113,7 +113,8 @@ $this->registerJs($script, yii\web\View::POS_READY);
             <button class="btn btn-success" id="report">В отчет</button>
         </div>
         <br>
-        <div id="resultmessage">
+        <div>
+        <div id="resultmessage" style="height:80px">
 
         </div>
     </div>
