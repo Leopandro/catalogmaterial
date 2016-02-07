@@ -586,6 +586,11 @@ class BaseMaterial extends \yii\db\ActiveRecord
     public static function createModel($group_id, $attributes)
     {
         $baseMaterial = new BaseMaterial();
+        foreach ($attributes as $key => $value)
+        {
+            if ($value == '')
+                $attributes[$key] = NULL;
+        }
         $baseMaterial->setAttributes($attributes);
         if(!$baseMaterial->save())
             return false;
