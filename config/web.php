@@ -61,6 +61,7 @@ $config = [
 		    'dateFormat' => 'php:d.m.Y',
 		    'datetimeFormat' => 'php:d.m.Y H:i',
 		    'timeFormat' => 'php:H:i:s',
+			'nullDisplay' => ''
 	    ],
         'request' => [
             'baseUrl' => '',
