@@ -21,7 +21,7 @@ class SectionForm extends Model
             [
                 ['id', 'required'],
                 ['name', 'trim'],
-                ['name', 'required', 'message' => 'Введите имя раздела/группы'],
+                ['name', 'required', 'message' => 'Введите имя раздела'],
                 ['name', 'string', 'max' => 255, 'message' => 'Максимальная длина 255 символов'],
                 ['name', 'string', 'min' => 1],
                 [['id', 'name'], 'safe']
@@ -31,7 +31,7 @@ class SectionForm extends Model
     public function attributeLabels()
     {
         return [
-            'name' => 'Имя раздела/группы'
+            'name' => 'Имя раздела'
         ];
     }
 }

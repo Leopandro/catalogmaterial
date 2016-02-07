@@ -7,11 +7,11 @@
  */
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-$this->title = 'Создать каталог';
+$this->title = 'Создать раздел';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="menu-form">
-    <? echo $message?>
+<!--    --><?// echo $message?>
     <? $form = ActiveForm::begin(); ?>
 
     <div class="hidden">

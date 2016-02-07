@@ -22,7 +22,7 @@ var idMaterial;
 $('.listitem').click(function(){
     idMaterial = $(this).attr('id');
     var x = $.ajax({
-        'url' : '{$url}'+'?material_id='+idMaterial
+        'url' : '{$url}'+'&material_id='+idMaterial
     }).done(function()
     {
         $("#detailview").empty();

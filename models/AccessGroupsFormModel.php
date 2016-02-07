@@ -18,7 +18,7 @@ class AccessGroupsFormModel extends Model {
     {
         return
             [
-                ['user', 'required', 'message' => 'Выберите пользователя'],
+               // ['user', 'required', 'message' => 'Выберите пользователя'],
                 [['user', 'accessGroups'], 'safe']
             ];
     }

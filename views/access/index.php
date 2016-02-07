@@ -106,7 +106,7 @@ $( document ).ready(function() {
 
     $(document).on('change','#accessgroupsformmodel-user',function(event){
         //console.log('change');
-        window.location.href = "$addressAccessIndex"+"&idUser="+$('#accessgroupsformmodel-user').val();
+        window.location.href = "$addressAccessIndex"+"?idUser="+$('#accessgroupsformmodel-user').val();
     });
 
 });
