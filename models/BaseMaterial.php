@@ -276,10 +276,10 @@ class BaseMaterial extends \yii\db\ActiveRecord
         $xls->setActiveSheetIndex(0);
         $sheet = $xls->getActiveSheet();
         $sheet->getColumnDimension('A')->setWidth(30);
-        $sheet->getColumnDimension('B')->setWidth(20);
-        $sheet->getColumnDimension('C')->setWidth(22);
-        $sheet->getColumnDimension('D')->setWidth(25);
-        $sheet->getColumnDimension('E')->setWidth(22);
+//        $sheet->getColumnDimension('B')->setWidth(20);
+//        $sheet->getColumnDimension('C')->setWidth(22);
+//        $sheet->getColumnDimension('D')->setWidth(25);
+//        $sheet->getColumnDimension('E')->setWidth(22);
 
         //перевод строки
         foreach (range('A','Z') as $columnName){
@@ -290,7 +290,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 PHPExcel_Style_Alignment::VERTICAL_TOP);
         }
         //установка ширины
-        foreach (range('F','Z') as $columnName){
+        foreach (range('B','Z') as $columnName){
             $sheet->getColumnDimension($columnName)->setWidth(15);
         }
         $lastCatalogId = 0;
@@ -299,7 +299,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
             if ($materials[$i]['catalog_id'] != $lastCatalogId){
                 $i == 0 ? $highestrow = $sheet->getHighestRow() : $highestrow = $sheet->getHighestRow()+1;
                 $catalog = Catalog::findOne(['id' => $materials[$i]['catalog_id']]);
-                $sheet->mergeCells('A'.$highestrow.':'.'E'.$highestrow);
+                $sheet->mergeCells('A'.$highestrow.':'.'B'.$highestrow);
                 $sheet->setCellValue('A'.$highestrow, $catalog->name);
                 $sheet->getStyle('A'.$highestrow)->applyFromArray([
                     'fill' => [
@@ -311,15 +311,14 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 //заполняем названия столбцов
                 {
                     $highestrow = $sheet->getHighestRow() + 1;
-                    $materialColumnNames = self::getAttributesArray()[0];
+                    $materialColumnName = self::getAttributesArray()[0][0];
                     $characteristicColumnNames = self::getNamesOnly($catalog);
+                    //Вводим 'наименование'
                     $j = 0;
-                    foreach ($materialColumnNames as $columnName)
-                    {
-                        $cellAddress = chr(ord('A')+$j).$highestrow;
-                        $sheet->setCellValue($cellAddress, $columnName);
-                        $j++;
-                    }
+                    $cellAddress = chr(ord('A')+$j).$highestrow;
+                    $sheet->setCellValue($cellAddress, $materialColumnName);
+                    $j++;
+
                     foreach ($characteristicColumnNames as $columnName)
                     {
                         $cellAddress = chr(ord('A')+$j).$highestrow;
@@ -332,24 +331,15 @@ class BaseMaterial extends \yii\db\ActiveRecord
                     $highestrow = $sheet->getHighestRow() + 1;
                     $materialAttributes = BaseMaterial::findOne(['id' => $materials[$i]['base_material_id']]);
                     $j = 0;
-                    foreach($materialAttributes as $key => $value)
-                    {
-                        if ($key != 'id')
-                        {
-                            if ($key != 'date_verify')
-                            {
+//                    foreach($materialAttributes as $key => $value)
+//                    {
+//                        if ($key == 'id')
+//                        {
                                 $cellAddress = chr(ord('A')+$j).$highestrow;
-                                $sheet->setCellValue($cellAddress, $value);
+                                $sheet->setCellValue($cellAddress, $materialAttributes['name']);
                                 $j++;
-                            }
-                            else
-                            {
-                                $cellAddress = chr(ord('A')+$j).$highestrow;
-                                $sheet->setCellValue($cellAddress, date('d.m.Y', strtotime($value)));
-                                $j++;
-                            }
-                        }
-                    }
+//                        }
+//                    }
                     $materialCharacteristics = (new Query())
                         ->select('*')
                         ->from($catalog->table_name)
@@ -375,24 +365,15 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 $highestrow = $sheet->getHighestRow() + 1;
                 $materialAttributes = BaseMaterial::findOne(['id' => $materials[$i]['base_material_id']]);
                 $j = 0;
-                foreach($materialAttributes as $key => $value)
-                {
-                    if ($key != 'id')
-                    {
-                        if ($key != 'date_verify')
-                        {
-                            $cellAddress = chr(ord('A')+$j).$highestrow;
-                            $sheet->setCellValue($cellAddress, $value);
-                            $j++;
-                        }
-                        else
-                        {
-                            $cellAddress = chr(ord('A')+$j).$highestrow;
-                            $sheet->setCellValue($cellAddress, date('d.m.Y', strtotime($value)));
-                            $j++;
-                        }
-                    }
-                }
+//                    foreach($materialAttributes as $key => $value)
+//                    {
+//                        if ($key == 'id')
+//                        {
+                $cellAddress = chr(ord('A')+$j).$highestrow;
+                $sheet->setCellValue($cellAddress, $materialAttributes['name']);
+                $j++;
+//                        }
+//                    }
                 $materialCharacteristics = (new Query())
                     ->select('*')
                     ->from($catalog->table_name)
@@ -716,15 +697,40 @@ class BaseMaterial extends \yii\db\ActiveRecord
     /* Получаем колонки с именами и лейблами */
     public static function getColumnsAndLabels($group)
     {
-        $columns = self::getBaseMaterialLabels();
-        $labelsCharacteritic = self::getLabels($group);
-        $i = 5;
-        foreach ($labelsCharacteritic as $label) {
-            $columns[$i]['label'] = $label['name'];
-            $columns[$i]['attribute'] = $label['label'];
-            $i++;
+        if (Yii::$app->user->identity->role_id == 1)
+        {
+            $columns = self::getBaseMaterialLabels();
+            $labelsCharacteritic = self::getLabels($group);
+            $i = 5;
+            foreach ($labelsCharacteritic as $label) {
+                $columns[$i]['label'] = $label['name'];
+                $columns[$i]['attribute'] = $label['label'];
+                $i++;
+            }
+            return $columns;
         }
-        return $columns;
+        else
+        {
+            $columns = [
+                [
+                    'attribute' => 'name',
+                    'label' => 'Наименование',
+                    'rules_validate'=>[
+                        ['name','required'],
+                        ['name','string','max'=>128]
+                    ],
+                    'type_widget'=>'textfield'
+                ]
+            ];
+            $labelsCharacteritic = self::getLabels($group);
+            $i = 1;
+            foreach ($labelsCharacteritic as $label) {
+                $columns[$i]['label'] = $label['name'];
+                $columns[$i]['attribute'] = $label['label'];
+                $i++;
+            }
+            return $columns;
+        }
     }
 
     /* Массив атрибутов и лейблов для detailview */
