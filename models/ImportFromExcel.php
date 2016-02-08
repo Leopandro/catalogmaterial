@@ -85,8 +85,12 @@ class ImportFromExcel extends \yii\base\Model
                 {
                     if ($this->settings[$key]['nameExcelColumn'] != '')
                     {
+                        $cell = $sheet->getCell($this->settings[$key]['nameExcelColumn'].$i);
                         $invDate = $sheet->getCell($this->settings[$key]['nameExcelColumn'].$i)->getValue();
-                        $trueDate = date('Y-m-d h:i:s', strtotime($invDate));
+                        //$trueDate = date('Y-m-d h:i:s', strtotime($invDate));
+                        if(PHPExcel_Shared_Date::isDateTime($cell)) {
+                            $trueDate = date('Y-m-d h:i:s', PHPExcel_Shared_Date::ExcelToPHP($invDate));
+                        }
                         $row[$key] = $trueDate;
                     }
                     else
