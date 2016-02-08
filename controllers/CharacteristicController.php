@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\BaseMaterial;
+use app\models\Catalog;
 use Yii;
 use app\models\CharacteristicGroup;
 use app\models\CharacteristicGroupSearch;
@@ -97,8 +99,12 @@ class CharacteristicController extends Controller
      */
     public function actionDelete($id)
     {
+
         $id_group = $this->findModel($id)->id_group;
         $this->findModel($id)->delete();
+
+        $group = (new Catalog())->findOne(['id' => $id_group]);
+        BaseMaterial::updateTable($group);
 
         return $this->redirect(['catalog/editgroup', 'id' => $id_group]);
     }
