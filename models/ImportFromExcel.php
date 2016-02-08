@@ -90,8 +90,8 @@ class ImportFromExcel extends \yii\base\Model
                         //$trueDate = date('Y-m-d h:i:s', strtotime($invDate));
                         if(PHPExcel_Shared_Date::isDateTime($cell)) {
                             $trueDate = date('Y-m-d h:i:s', PHPExcel_Shared_Date::ExcelToPHP($invDate));
+                            $row[$key] = $trueDate;
                         }
-                        $row[$key] = $trueDate;
                     }
                     else
                     {
