@@ -9,6 +9,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\Query;
+use PHPExcel_Shared_Date;
 
 class ImportFromExcel extends \yii\base\Model
 {
@@ -69,13 +70,29 @@ class ImportFromExcel extends \yii\base\Model
         {
             foreach ($arr as $key => $value)
             {
-                if ($this->settings[$key]['nameExcelColumn'] != '')
+                if ($key != 'date_verify')
                 {
-                    $row[$key] = $sheet->getCell($this->settings[$key]['nameExcelColumn'].$i)->getValue();
+                    if ($this->settings[$key]['nameExcelColumn'] != '')
+                    {
+                        $row[$key] = $sheet->getCell($this->settings[$key]['nameExcelColumn'].$i)->getValue();
+                    }
+                    else
+                    {
+                        $row[$key] = '';
+                    }
                 }
                 else
                 {
-                    $row[$key] = '';
+                    if ($this->settings[$key]['nameExcelColumn'] != '')
+                    {
+                        $invDate = $sheet->getCell($this->settings[$key]['nameExcelColumn'].$i)->getValue();
+                        $trueDate = date('Y-m-d h:i:s', strtotime($invDate));
+                        $row[$key] = $trueDate;
+                    }
+                    else
+                    {
+                        $row[$key] = '';
+                    }
                 }
             }
             $rows[] = $row;

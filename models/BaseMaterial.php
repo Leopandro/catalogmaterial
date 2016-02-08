@@ -268,6 +268,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
     //Вывод отчета в excel
     public static function getReports()
     {
+        //Здесь удалю столбцы
         $materials = ExcelReport::find()
             ->where(['user_id' => Yii::$app->user->id])
             ->orderBy('catalog_id')
@@ -318,7 +319,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
                     $cellAddress = chr(ord('A')+$j).$highestrow;
                     $sheet->setCellValue($cellAddress, $materialColumnName);
                     $j++;
-
+                    //Вводим характеристики
                     foreach ($characteristicColumnNames as $columnName)
                     {
                         $cellAddress = chr(ord('A')+$j).$highestrow;
@@ -330,16 +331,11 @@ class BaseMaterial extends \yii\db\ActiveRecord
                 {
                     $highestrow = $sheet->getHighestRow() + 1;
                     $materialAttributes = BaseMaterial::findOne(['id' => $materials[$i]['base_material_id']]);
+                    //Вводим 'наименование'
                     $j = 0;
-//                    foreach($materialAttributes as $key => $value)
-//                    {
-//                        if ($key == 'id')
-//                        {
-                                $cellAddress = chr(ord('A')+$j).$highestrow;
-                                $sheet->setCellValue($cellAddress, $materialAttributes['name']);
-                                $j++;
-//                        }
-//                    }
+                    $cellAddress = chr(ord('A')+$j).$highestrow;
+                    $sheet->setCellValue($cellAddress, $materialAttributes['name']);
+                    $j++;
                     $materialCharacteristics = (new Query())
                         ->select('*')
                         ->from($catalog->table_name)
@@ -359,21 +355,13 @@ class BaseMaterial extends \yii\db\ActiveRecord
             }
             else{
                 $catalog = Catalog::findOne(['id' => $materials[$i]['catalog_id']]);
-                //заполняем названия столбцов
-
                 //заполняем значения
                 $highestrow = $sheet->getHighestRow() + 1;
                 $materialAttributes = BaseMaterial::findOne(['id' => $materials[$i]['base_material_id']]);
                 $j = 0;
-//                    foreach($materialAttributes as $key => $value)
-//                    {
-//                        if ($key == 'id')
-//                        {
                 $cellAddress = chr(ord('A')+$j).$highestrow;
                 $sheet->setCellValue($cellAddress, $materialAttributes['name']);
                 $j++;
-//                        }
-//                    }
                 $materialCharacteristics = (new Query())
                     ->select('*')
                     ->from($catalog->table_name)
@@ -653,7 +641,6 @@ class BaseMaterial extends \yii\db\ActiveRecord
 
         return true;
     }
-
 
     /* Получаем таблицу из таблицы материалов и характеристик для xsl*/
     public static function getModels($group)
