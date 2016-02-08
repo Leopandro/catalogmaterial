@@ -367,11 +367,15 @@ class BaseMaterial extends \yii\db\ActiveRecord
                     ->from($catalog->table_name)
                     ->where(['id' => $materials[$i]['base_material_id']])
                     ->one();
+
+                Yii::warning('data '.print_r($materialCharacteristics,true));
+
                 foreach($materialCharacteristics as $key => $value)
                 {
                     if ($key != 'id')
                     {
                         $cellAddress = chr(ord('A')+$j).$highestrow;
+                        Yii::warning('cell address '.$cellAddress.' value of cell: '.$value);
                         $sheet->setCellValue($cellAddress, $value);
                         $j++;
                     }
