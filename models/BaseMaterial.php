@@ -77,7 +77,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
             $baseMaterialIds = (new Query())
                 ->select('id')
                 ->from(BaseMaterial::tableName())
-                ->where(['like', 'name', $params['name']['value']])
+                ->where(['like', 'name', explode(' ', $params['name']['value'])])
                 ->all();
         if (is_array($baseMaterialIds))
         {
@@ -110,7 +110,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
             if ($param['label'] != 'name'){
                 if ($param['type_value'] == '1') {
                     if ($param['value'] != '')
-                        $query->andwhere(['like', $param['label'], $param['value']]);
+                        $query->andwhere(['like', $param['label'], explode(' ', $param['value'])]);
                 }
                 else {
                     if(($param['firstcompare'] == '<' || $param['firstcompare'] == '<=' || $param['firstcompare'] == '=') && $param['firstvalue'] != '') {
