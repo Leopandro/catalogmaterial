@@ -101,6 +101,7 @@ class BaseMaterial extends \yii\db\ActiveRecord
                         $k = $param['firstcompare'];
                         $param['firstcompare'] = $param['secondcompare'];
                         $param['secondcompare'] = $k;
+                        
                     }
                 }
             }
