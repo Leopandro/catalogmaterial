@@ -18,7 +18,7 @@ $url = Url::toRoute(['/basematerial/excel']);
 //Действия с группами
 $urlCreate = Url::toRoute(['/catalog/create']);
 $urlEdit = Url::toRoute(['/catalog/edit']);
-$urlDelete = Url::toRoute(['/catalog/delete']);
+$urlDelete = Url::toRoute(['/catalog/deletesection']);
 
 //Действия с разделами
 $urlGroup = Url::toRoute(['/catalog/group']);

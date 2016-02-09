@@ -262,10 +262,14 @@ class CatalogController extends \yii\web\Controller
     }
 
 
-    public function actionDelete()
+    public function actionDeletesection()
     {
         $id = Yii::$app->request->get('id');
-        
+
+        $root = Catalog::findOne(['id' => $id]);
+        $leaves = $root->leaves()->all();
+        BaseMaterial::deleteRecursiveGroups($leaves);
+        $root->deleteWithChildren();
 
         $urlToRedirect = Url::toRoute('catalog/index');
         return $this->redirect($urlToRedirect);

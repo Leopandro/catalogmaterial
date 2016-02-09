@@ -835,9 +835,24 @@ class BaseMaterial extends \yii\db\ActiveRecord
         return $baseMaterialAttributes;
     }
 
+    public static function deleteRecursiveGroups($leaves)
+    {
+        if ($leaves && !empty($leaves) && !is_null($leaves) && is_array($leaves))
+        {
+            foreach ($leaves as $leave)
+            {
+                if ($leave->node_type == 1)
+                    self::deleteTableWithRows($leave);
+                else
+                    self::deleteRecursiveGroups($leave);
+            }
+        }
+    }
+
     public static function deleteTableWithRows($group)
     {
         $table_name = $group->table_name;
+
 
         //Удаляем характеристики
         $query = Yii::$app->db->createCommand()
