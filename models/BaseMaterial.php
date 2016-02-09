@@ -89,6 +89,8 @@ class BaseMaterial extends \yii\db\ActiveRecord
         }
         foreach ($params as $param)
         {
+            if ($param['firstcompare'] == '') $param['firstvalue'] = '';
+            if ($param['secondcompare'] == '') $param['secondvalue'] = '';
             if ($param['secondcompare'] != '' && $param['secondvalue'] != '' && $param['firstcompare'] != '' && $param['firstvalue'] != '')
             {
                 if (($param['firstcompare'] == '<' || $param['firstcompare'] == '<=') && ($param['secondcompare'] == '>' || $param['secondcompare'] == '>='))
@@ -101,19 +103,19 @@ class BaseMaterial extends \yii\db\ActiveRecord
                         $k = $param['firstcompare'];
                         $param['firstcompare'] = $param['secondcompare'];
                         $param['secondcompare'] = $k;
-                        
+
                     }
                 }
             }
             if ($param['label'] != 'name'){
                 if ($param['type_value'] == '1') {
                     if ($param['value'] != '')
-                        $query->where(['like', $param['label'], $param['value']]);
+                        $query->andwhere(['like', $param['label'], $param['value']]);
                 }
                 else {
                     if(($param['firstcompare'] == '<' || $param['firstcompare'] == '<=' || $param['firstcompare'] == '=') && $param['firstvalue'] != '') {
                         if($param['secondcompare'] != '' && $param['secondvalue'] != ''){
-                            $query->where([
+                            $query->andwhere([
                                 'or',
                                 $param['label'].$param['firstcompare'].$param['firstvalue'],
                                 $param['label'].$param['secondcompare'].$param['secondvalue']
@@ -121,25 +123,25 @@ class BaseMaterial extends \yii\db\ActiveRecord
                                // ->andWhere([$param['secondcompare'], $param['label'], $param['secondvalue']]);
                         }
                         else{
-                            $query->where([$param['firstcompare'], $param['label'], $param['firstvalue']]);
+                            $query->andwhere([$param['firstcompare'], $param['label'], $param['firstvalue']]);
                         }
                     }
                     elseif($param['firstcompare'] == '>' || $param['firstcompare'] == '>=' && $param['firstvalue'] != '')
                     {
                         if($param['secondcompare'] != '' && $param['secondvalue'] != ''){
-                            $query->where([
+                            $query->andwhere([
                                 'and',
                                 $param['label'].$param['firstcompare'].$param['firstvalue'],
                                 $param['label'].$param['secondcompare'].$param['secondvalue']
                             ]);
                         }
                         else{
-                            $query->where([$param['firstcompare'], $param['label'], $param['firstvalue']]);
+                            $query->andwhere([$param['firstcompare'], $param['label'], $param['firstvalue']]);
                         }
                     }
                     elseif($param['firstcompare'] == '' || $param['firstvalue'] == '') {
                         if ($param['secondcompare'] != '' || $param['secondvalue'] != '')
-                            $query->where([$param['secondcompare'], $param['label'], $param['secondvalue']]);
+                            $query->andwhere([$param['secondcompare'], $param['label'], $param['secondvalue']]);
                     };
                 }
             }
