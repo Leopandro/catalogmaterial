@@ -9,9 +9,13 @@ use app\models\CharacteristicGroupTemp;
 use app\models\ExcelReport;
 use app\models\GroupSectionForm;
 use app\models\SectionForm;
+use roopz\imap\Exception;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use Yii;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
 
 class CatalogController extends \yii\web\Controller
 {
@@ -232,6 +236,40 @@ class CatalogController extends \yii\web\Controller
 //
 //    }
 
+    public function actionDeletegroup()
+    {
+        $id = Yii::$app->request->get('id');
+        $group = Catalog::findOne(['id' => $id]);
+        if ($group->node_type == 0)
+        {
+            throw new NotFoundHttpException();
+        }
+        else
+        {
+            try{
+                $result = BaseMaterial::deleteTableWithRows($group);
+            }
+            catch(Exception $e)
+            {
+                //Надо записать в лог ошибку я думаю
+            }
+            if ($result == 0)
+                throw new NotFoundHttpException();
+            $group->deleteWithChildren();
+        }
+        $urlToRedirect = Url::toRoute('catalog/index');
+        return $this->redirect($urlToRedirect);
+    }
+
+
+    public function actionDelete()
+    {
+        $id = Yii::$app->request->get('id');
+        
+
+        $urlToRedirect = Url::toRoute('catalog/index');
+        return $this->redirect($urlToRedirect);
+    }
     //---------------------------------------------------------------------------------------
 
     //---------------------------------------------------------------------------------------

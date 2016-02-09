@@ -835,4 +835,41 @@ class BaseMaterial extends \yii\db\ActiveRecord
         return $baseMaterialAttributes;
     }
 
+    public static function deleteTableWithRows($group)
+    {
+        $table_name = $group->table_name;
+
+        //Удаляем характеристики
+        $query = Yii::$app->db->createCommand()
+            ->delete(CharacteristicGroup::tableName(), ['id_group' => $group->id])
+            ->execute();
+
+        //Удаляем записи доступа к группе
+        $query = Yii::$app->db->createCommand()
+            ->delete(AccessUserGroupMaterial::tableName(), ['id_group_material' => $group->id])
+            ->execute();
+
+        //Берем id записей из таблицы характеристик
+        $ids = (new Query())
+            ->select('id')
+            ->from($table_name)
+            ->all();
+        foreach($ids as $id)
+        {
+            $idsDelete[] = $id['id'];
+        }
+
+        //Удаляем саму таблицу характеристик
+        $query = Yii::$app->db->createCommand()
+            ->dropTable($table_name)
+            ->execute();
+        if ($query == 0)
+            return $query;
+
+        //Удаляем записи из таблицы материалов
+        $query = Yii::$app->db->createCommand()
+            ->delete(BaseMaterial::tableName(), ['id' => $idsDelete])
+            ->execute();
+        return $query;
+    }
 }
