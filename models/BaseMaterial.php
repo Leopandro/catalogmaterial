@@ -100,7 +100,9 @@ class BaseMaterial extends \yii\db\ActiveRecord
             }
             if($param['firstvalue'] != '')
             {
-                if (is_numeric($param['firstvalue']))
+                str_replace(',', '.', $param['firstvalue']);
+                preg_match_all('/\d+/', $param['firstvalue'], $x);
+                if ($x)
                     $param['firstvalue'] = floatval($param['firstvalue']);
                 else
                 {
@@ -110,7 +112,9 @@ class BaseMaterial extends \yii\db\ActiveRecord
             }
             if($param['secondvalue'] != '')
             {
-                if (is_numeric($param['secondvalue']))
+                str_replace(',', '.', $param['secondvalue']);
+                preg_match_all('/\d+/', $param['firstvalue'], $x);
+                if ($x)
                     $param['secondvalue'] = floatval($param['secondvalue']);
                 else
                 {
