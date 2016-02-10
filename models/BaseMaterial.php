@@ -94,17 +94,29 @@ class BaseMaterial extends \yii\db\ActiveRecord
             {
                 $param['firstvalue'] = '';
             }
-            if($param['firstvalue'] != '')
-            {
-                $param['firstvalue'] = floatval($param['firstvalue']);
-            }
             if ($param['secondcompare'] == '')
             {
                 $param['secondvalue'] = '';
             }
+            if($param['firstvalue'] != '')
+            {
+                if (is_numeric($param['firstvalue']))
+                    $param['firstvalue'] = floatval($param['firstvalue']);
+                else
+                {
+                    $param['firstvalue'] = '';
+                    $param['firstcompare'] = '';
+                }
+            }
             if($param['secondvalue'] != '')
             {
-                $param['secondvalue'] = floatval($param['secondvalue']);
+                if (is_numeric($param['secondvalue']))
+                    $param['secondvalue'] = floatval($param['secondvalue']);
+                else
+                {
+                    $param['secondvalue'] = '';
+                    $param['secondcompare'] = '';
+                }
             }
 
             if ($param['secondcompare'] != '' && $param['secondvalue'] != '' && $param['firstcompare'] != '' && $param['firstvalue'] != '')
@@ -119,7 +131,6 @@ class BaseMaterial extends \yii\db\ActiveRecord
                         $k = $param['firstcompare'];
                         $param['firstcompare'] = $param['secondcompare'];
                         $param['secondcompare'] = $k;
-
                     }
                 }
             }
