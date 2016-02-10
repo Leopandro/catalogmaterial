@@ -89,8 +89,24 @@ class BaseMaterial extends \yii\db\ActiveRecord
         }
         foreach ($params as $param)
         {
-            if ($param['firstcompare'] == '') $param['firstvalue'] = '';
-            if ($param['secondcompare'] == '') $param['secondvalue'] = '';
+
+            if ($param['firstcompare'] == '')
+            {
+                $param['firstvalue'] = '';
+            }
+            if($param['firstvalue'] != '')
+            {
+                $param['firstvalue'] = floatval($param['firstvalue']);
+            }
+            if ($param['secondcompare'] == '')
+            {
+                $param['secondvalue'] = '';
+            }
+            if($param['secondvalue'] != '')
+            {
+                $param['secondvalue'] = floatval($param['secondvalue']);
+            }
+
             if ($param['secondcompare'] != '' && $param['secondvalue'] != '' && $param['firstcompare'] != '' && $param['firstvalue'] != '')
             {
                 if (($param['firstcompare'] == '<' || $param['firstcompare'] == '<=') && ($param['secondcompare'] == '>' || $param['secondcompare'] == '>='))
