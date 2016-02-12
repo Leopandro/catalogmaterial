@@ -20,6 +20,9 @@ $config = [
 			    'User' => 'app\models\User',
 			    'Profile' => 'app\models\Profile',
 		    ],
+            'controllerMap' => [
+                'security' => 'app\controllers\SecurityController'
+            ],
 	    ],
         'gridview' =>  [
             'class' => '\kartik\grid\Module',
